@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --animate-hero-breathe: hero-breathe 18s ease-in-out infinite alternate;
+}
+
+:root {
+  --radius: 0.85rem;
+  --background: #fbfdfe;
+  --foreground: #12395d;
+  --card: #fff;
+  --card-foreground: #12395d;
+  --popover: #fff;
+  --popover-foreground: #12395d;
+  --primary: #0f7065;
+  --primary-foreground: #fff;
+  --secondary: #e8f5f5;
+  --secondary-foreground: #12395d;
+  --muted: #f6f9fa;
+  --muted-foreground: #597286;
+  --accent: #e8f5f5;
+  --accent-foreground: #0f7065;
+  --destructive: #b63a4b;
+  --destructive-foreground: #fff;
+  --border: rgb(18 57 93 / 12%);
+  --input: rgb(18 57 93 / 16%);
+  --ring: #4291cd;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply m-0 bg-background font-sans text-foreground;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  select:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+
+  ::selection {
+    background: #7ab2db;
+    color: #082b46;
+  }
+}
+
+@keyframes hero-breathe {
+  from {
+    transform: scale(1.02);
+  }
+
+  to {
+    transform: scale(1.07);
+  }
+}
+
+@keyframes business-gallery-scroll {
+  to {
+    transform: translateX(calc(-50% - .5rem));
+  }
+}
+
+.business-gallery-track {
+  animation: business-gallery-scroll 45s linear infinite;
+}
+
+.business-gallery-track--slow {
+  animation-duration: 55s;
+  animation-delay: -18s;
+}
+
+.business-gallery:hover .business-gallery-track {
+  animation-duration: 140s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .business-gallery-track {
+    animation-play-state: paused;
+  }
+}
