@@ -3,7 +3,11 @@ import { createPortal } from "react-dom";
 import { ArrowRight, ChevronDown, MapPin, Menu, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { services } from "@/serviceData";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export const WHATSAPP_URL =
   "https://wa.me/523224704622?text=Hola%2C%20Salud%20e%20Imagen%20del%20Puerto.%20Quiero%20consultar%20por%20un%20estudio.";
@@ -106,8 +110,15 @@ export function Logo({
         aria-hidden="true"
         className={`absolute left-0 top-1/2 h-14 w-auto -translate-y-1/2 object-contain transition-[opacity,transform] duration-300 motion-reduce:transition-none sm:h-24 ${compact ? "scale-90 opacity-0" : "scale-100 opacity-100"}`}
       />
-      <span aria-hidden="true" className={`absolute inset-0 transition-[opacity,transform] duration-300 motion-reduce:transition-none ${compact ? "scale-100 opacity-100" : "scale-90 opacity-0"} ${white ? "" : "brightness-0"}`}>
-        <img src="/brand/logo-simbolo.webp" alt="" className="size-full object-contain" />
+      <span
+        aria-hidden="true"
+        className={`absolute inset-0 transition-[opacity,transform] duration-300 motion-reduce:transition-none ${compact ? "scale-100 opacity-100" : "scale-90 opacity-0"} ${white ? "" : "brightness-0"}`}
+      >
+        <img
+          src="/brand/logo-simbolo.webp"
+          alt=""
+          className="size-full object-contain"
+        />
       </span>
     </Link>
   );
@@ -181,7 +192,8 @@ export function Header({ dark = false }: { dark?: boolean }) {
     .replace(/--/g, "\0")
     .replace(/-/g, ".")
     .replace(/\0/g, "-");
-  const spanishUrl = translatedSource || `https://${translatedHost}${currentUrl.pathname}`;
+  const spanishUrl =
+    translatedSource || `https://${translatedHost}${currentUrl.pathname}`;
   const languageUrl = isEnglish
     ? spanishUrl
     : `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIComponent(currentUrl.href)}`;
@@ -198,24 +210,70 @@ export function Header({ dark = false }: { dark?: boolean }) {
             className="hidden items-stretch gap-7 self-stretch lg:flex"
             aria-label="Navegación principal"
           >
-            {navItems.map(([label, href]) => href === "/servicios" ? (
-              <Popover key={href} open={desktopServicesOpen} onOpenChange={setDesktopServicesOpen}>
-                <PopoverTrigger asChild>
-                  <button type="button" className={`flex min-h-11 items-center gap-1.5 text-[10px] font-bold uppercase tracking-[.13em] transition-colors ${isDark ? "text-white/70 hover:text-white" : "text-[#597286] hover:text-[#12395d]"}`}>
-                    {label}<ChevronDown className={`size-3.5 transition-transform ${desktopServicesOpen ? "rotate-180" : ""}`} />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent side="bottom" sideOffset={0} avoidCollisions={false} className="z-[90] hidden max-h-[calc(100dvh-104px)] w-[520px] overflow-y-auto rounded-t-none rounded-b-2xl border-[#12395d]/10 p-0 shadow-[0_24px_70px_rgba(8,43,70,.2)] lg:block" aria-label="Servicios del centro">
-                  <div className="flex items-center justify-between bg-[#e8f5f5] px-5 py-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#0f7065]">Cuidarte empieza aquí</p>
-                    <Link href="/servicios" onClick={() => setDesktopServicesOpen(false)} className="flex items-center gap-2 text-xs font-semibold text-[#12395d]">Ver todos <ArrowRight className="size-4" /></Link>
-                  </div>
-                  <nav aria-label="Submenú de servicios" className="grid grid-cols-2 gap-1 p-2">
-                    {services.map(({ slug, title, Icon }) => <Link key={slug} href={`/servicios/${slug}`} onClick={() => setDesktopServicesOpen(false)} aria-current={location === `/servicios/${slug}` ? "page" : undefined} className="group flex items-center gap-2.5 rounded-xl p-2.5 text-[#12395d] transition-colors hover:bg-[#f1f6f8] focus-visible:bg-[#e8f5f5] aria-[current=page]:bg-[#e8f5f5]"><span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#e8f5f5] text-[#0f7065]"><Icon className="size-4" /></span><span className="text-xs font-semibold">{title}</span><ArrowRight className="ml-auto size-3 shrink-0 text-[#4291cd]" /></Link>)}
-                  </nav>
-                </PopoverContent>
-              </Popover>
-            ) : (
+            {navItems.map(([label, href]) =>
+              href === "/servicios" ? (
+                <Popover
+                  key={href}
+                  open={desktopServicesOpen}
+                  onOpenChange={setDesktopServicesOpen}
+                >
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      className={`flex min-h-11 items-center gap-1.5 text-[10px] font-bold uppercase tracking-[.13em] transition-colors ${isDark ? "text-white/70 hover:text-white" : "text-[#597286] hover:text-[#12395d]"}`}
+                    >
+                      {label}
+                      <ChevronDown
+                        className={`size-3.5 transition-transform ${desktopServicesOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    side="bottom"
+                    sideOffset={0}
+                    avoidCollisions={false}
+                    className="z-[90] hidden max-h-[calc(100dvh-104px)] w-[520px] overflow-y-auto rounded-t-none rounded-b-2xl border-[#12395d]/10 p-0 shadow-[0_24px_70px_rgba(8,43,70,.2)] lg:block"
+                    aria-label="Servicios del centro"
+                  >
+                    <div className="flex items-center justify-between bg-[#e8f5f5] px-5 py-4">
+                      <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#0f7065]">
+                        Cuidarte empieza aquí
+                      </p>
+                      <Link
+                        href="/servicios"
+                        onClick={() => setDesktopServicesOpen(false)}
+                        className="flex items-center gap-2 text-xs font-semibold text-[#12395d]"
+                      >
+                        Ver todos <ArrowRight className="size-4" />
+                      </Link>
+                    </div>
+                    <nav
+                      aria-label="Submenú de servicios"
+                      className="grid grid-cols-2 gap-1 p-2"
+                    >
+                      {services.map(({ slug, title, Icon }) => (
+                        <Link
+                          key={slug}
+                          href={`/servicios/${slug}`}
+                          onClick={() => setDesktopServicesOpen(false)}
+                          aria-current={
+                            location === `/servicios/${slug}`
+                              ? "page"
+                              : undefined
+                          }
+                          className="group flex items-center gap-2.5 rounded-xl p-2.5 text-[#12395d] transition-colors hover:bg-[#f1f6f8] focus-visible:bg-[#e8f5f5] aria-[current=page]:bg-[#e8f5f5]"
+                        >
+                          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#e8f5f5] text-[#0f7065]">
+                            <Icon className="size-4" />
+                          </span>
+                          <span className="text-xs font-semibold">{title}</span>
+                          <ArrowRight className="ml-auto size-3 shrink-0 text-[#4291cd]" />
+                        </Link>
+                      ))}
+                    </nav>
+                  </PopoverContent>
+                </Popover>
+              ) : (
                 <Link
                   key={href}
                   href={href}
@@ -224,7 +282,8 @@ export function Header({ dark = false }: { dark?: boolean }) {
                 >
                   {label}
                 </Link>
-            ))}
+              )
+            )}
           </nav>
           <div className="flex items-center justify-self-end gap-2">
             <a
@@ -258,17 +317,57 @@ export function Header({ dark = false }: { dark?: boolean }) {
             className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center text-center"
             aria-label="Navegación móvil"
           >
-            {navItems.map(([label, href]) => href === "/servicios" ? (
-              <div key={href} className="w-full">
-                <button type="button" onClick={() => setServicesOpen(value => !value)} aria-expanded={servicesOpen} aria-controls="servicios-movil" className="flex w-full items-center justify-center gap-2 py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] text-white transition-colors hover:text-[#7ab2db]">{label}<ChevronDown className={`size-5 transition-transform ${servicesOpen ? "rotate-180" : ""}`} /></button>
-                <div id="servicios-movil" inert={!servicesOpen} className={`mx-auto grid max-w-md grid-cols-2 gap-2 overflow-hidden rounded-2xl bg-white/5 px-3 transition-[max-height,opacity,padding,margin] duration-300 ${servicesOpen ? "mt-2 max-h-[28rem] py-3 opacity-100" : "mt-0 max-h-0 py-0 opacity-0"}`}>
-                  <Link href="/servicios" className="col-span-2 flex items-center gap-3 rounded-xl bg-[#0f7065] px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[.08em] text-white transition-colors hover:bg-[#168879]"><span className="grid size-8 shrink-0 place-items-center rounded-full bg-white/10"><ArrowRight className="size-4" /></span>Todos los servicios</Link>
-                  {services.map(({ slug, title, Icon }) => <Link key={slug} href={`/servicios/${slug}`} className="flex min-h-12 items-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-left text-[9px] font-bold uppercase tracking-[.06em] text-white/70 transition-colors hover:bg-white/10 hover:text-white"><Icon className="size-4 shrink-0 text-[#7ab2db]" />{title}</Link>)}
+            {navItems.map(([label, href]) =>
+              href === "/servicios" ? (
+                <div key={href} className="w-full">
+                  <button
+                    type="button"
+                    onClick={() => setServicesOpen(value => !value)}
+                    aria-expanded={servicesOpen}
+                    aria-controls="servicios-movil"
+                    className="flex w-full items-center justify-center gap-2 py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] text-white transition-colors hover:text-[#7ab2db]"
+                  >
+                    {label}
+                    <ChevronDown
+                      className={`size-5 transition-transform ${servicesOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  <div
+                    id="servicios-movil"
+                    inert={!servicesOpen}
+                    className={`mx-auto grid max-w-md grid-cols-2 gap-2 overflow-hidden rounded-2xl bg-white/5 px-3 transition-[max-height,opacity,padding,margin] duration-300 ${servicesOpen ? "mt-2 max-h-[28rem] py-3 opacity-100" : "mt-0 max-h-0 py-0 opacity-0"}`}
+                  >
+                    <Link
+                      href="/servicios"
+                      className="col-span-2 flex items-center gap-3 rounded-xl bg-[#0f7065] px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[.08em] text-white transition-colors hover:bg-[#168879]"
+                    >
+                      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white/10">
+                        <ArrowRight className="size-4" />
+                      </span>
+                      Todos los servicios
+                    </Link>
+                    {services.map(({ slug, title, Icon }) => (
+                      <Link
+                        key={slug}
+                        href={`/servicios/${slug}`}
+                        className="flex min-h-12 items-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-left text-[9px] font-bold uppercase tracking-[.06em] text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                      >
+                        <Icon className="size-4 shrink-0 text-[#7ab2db]" />
+                        {title}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <Link key={href} href={href} className="block w-full py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] text-white transition-colors hover:text-[#7ab2db]">{label}</Link>
-            ))}
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  className="block w-full py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] text-white transition-colors hover:text-[#7ab2db]"
+                >
+                  {label}
+                </Link>
+              )
+            )}
           </nav>
           <div className="mx-auto mb-20 w-full max-w-lg border-t border-white/15 pt-5 sm:mb-24">
             <SocialLinks />
@@ -302,8 +401,12 @@ export function PageIntro({
       className={`relative z-10 min-w-0 max-w-3xl ${centered ? "mx-auto text-center" : right ? "ml-auto text-right" : ""}`}
     >
       {eyebrow && (
-        <p className={`mb-4 flex items-center gap-2.5 text-[9px] font-bold uppercase tracking-[0.2em] ${centered ? "justify-center" : right ? "justify-end" : ""} ${dark ? "text-[#7ab2db]" : "text-[#0f7065]"}`}>
-          <span className={`h-px w-8 ${dark ? "bg-[#7ab2db]" : "bg-[#4291cd]"}`} />
+        <p
+          className={`mb-4 flex items-center gap-2.5 text-[9px] font-bold uppercase tracking-[0.2em] ${centered ? "justify-center" : right ? "justify-end" : ""} ${dark ? "text-[#7ab2db]" : "text-[#0f7065]"}`}
+        >
+          <span
+            className={`h-px w-8 ${dark ? "bg-[#7ab2db]" : "bg-[#4291cd]"}`}
+          />
           {eyebrow}
         </p>
       )}
@@ -354,9 +457,17 @@ function AnimatedFooterLogo() {
       aria-label="Salud e Imagen del Puerto, inicio"
       className="group relative block size-40 sm:size-48"
     >
-      <img src="/brand/logo-white.webp" alt="Salud e Imagen del Puerto" className="absolute inset-0 size-full object-contain" />
+      <img
+        src="/brand/logo-white.webp"
+        alt="Salud e Imagen del Puerto"
+        className="absolute inset-0 size-full object-contain"
+      />
       <span className="absolute inset-x-0 bottom-0 h-0 overflow-hidden transition-[height] duration-1000 ease-in-out group-hover:h-full group-focus-visible:h-full">
-        <img src="/brand/logo.webp" alt="" className="absolute bottom-0 left-0 size-40 max-w-none object-contain sm:size-48" />
+        <img
+          src="/brand/logo.webp"
+          alt=""
+          className="absolute bottom-0 left-0 size-40 max-w-none object-contain sm:size-48"
+        />
       </span>
     </Link>
   );
@@ -377,7 +488,11 @@ export function Footer() {
             </p>
             <div className="mt-4 grid grid-cols-2 justify-items-center gap-x-6 gap-y-2 text-sm text-white/60 lg:justify-items-start">
               {services.map(({ slug, title }) => (
-                <Link key={slug} href={`/servicios/${slug}`} className="w-fit transition-all duration-300 ease-out hover:translate-x-1 hover:text-white">
+                <Link
+                  key={slug}
+                  href={`/servicios/${slug}`}
+                  className="w-fit transition-all duration-300 ease-out hover:translate-x-1 hover:text-white"
+                >
                   {title}
                 </Link>
               ))}
@@ -421,10 +536,16 @@ export function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 text-center text-[9px] font-bold uppercase tracking-[.1em] text-white/35 lg:flex-row lg:text-left">
           <p>© 2026 Salud e Imagen del Puerto.</p>
           <div className="flex flex-wrap gap-5">
-            <Link href="/aviso-de-privacidad" className="transition-colors duration-300 hover:text-white">
+            <Link
+              href="/aviso-de-privacidad"
+              className="transition-colors duration-300 hover:text-white"
+            >
               Aviso de privacidad
             </Link>
-            <Link href="/terminos-y-condiciones" className="transition-colors duration-300 hover:text-white">
+            <Link
+              href="/terminos-y-condiciones"
+              className="transition-colors duration-300 hover:text-white"
+            >
               Términos y condiciones
             </Link>
           </div>
@@ -474,8 +595,17 @@ export function ImageModal({
     >
       {image && (
         <figure className="relative overflow-hidden rounded-[22px] bg-white p-2 shadow-2xl">
-          <img src={image.src} alt={image.alt} className="max-h-[85vh] w-full rounded-[16px] object-contain" />
-          <button type="button" onClick={onClose} className="absolute right-4 top-4 grid size-11 place-items-center rounded-full bg-[#082b46]/90 text-white" aria-label="Cerrar imagen">
+          <img
+            src={image.src}
+            alt={image.alt}
+            className="max-h-[85vh] w-full rounded-[16px] object-contain"
+          />
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-4 top-4 grid size-11 place-items-center rounded-full bg-[#082b46]/90 text-white"
+            aria-label="Cerrar imagen"
+          >
             <X className="size-5" />
           </button>
         </figure>

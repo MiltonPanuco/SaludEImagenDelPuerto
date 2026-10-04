@@ -5,24 +5,24 @@ export default function SeidpPrivacy() {
     <PageShell>
       <main className="mx-auto max-w-[900px] px-5 pb-20 sm:px-8 sm:pb-28">
         <section className="pb-10 pt-32 sm:pb-12 sm:pt-40">
-        <h1 className="font-display text-4xl font-semibold leading-[.92] tracking-[-.055em] text-[#12395d] sm:text-6xl">
-          Aviso de
-          <br />
-          <span className="italic text-[#0f7065]">privacidad.</span>
-        </h1>
-        <p className="mt-7 text-sm text-[#597286]">
-          Última actualización: 1 de octubre de 2026
-        </p>
+          <h1 className="font-display text-4xl font-semibold leading-[.92] tracking-[-.055em] text-[#12395d] sm:text-6xl">
+            Aviso de
+            <br />
+            <span className="italic text-[#0f7065]">privacidad.</span>
+          </h1>
+          <p className="mt-7 text-sm text-[#597286]">
+            Última actualización: 1 de octubre de 2026
+          </p>
         </section>
         <div className="space-y-10 border-t border-[#12395d]/15 pt-10 text-[15px] leading-[1.8] text-[#597286] [&_h2]:font-display [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:text-[#12395d] [&_p]:mt-3">
           <section>
             <h2>1. Responsable del tratamiento</h2>
             <p>
-              Salud e Imagen del Puerto, con domicilio en Calle 10 de
-              Mayo #980, entre Guatemala y Brasil, Colonia Coapinole, Puerto
-              Vallarta, Jalisco, México, es responsable del tratamiento y
-              protección de los datos personales que sean proporcionados
-              voluntariamente por medios de contacto como WhatsApp o teléfono.
+              Salud e Imagen del Puerto, con domicilio en Calle 10 de Mayo #980,
+              entre Guatemala y Brasil, Colonia Coapinole, Puerto Vallarta,
+              Jalisco, México, es responsable del tratamiento y protección de
+              los datos personales que sean proporcionados voluntariamente por
+              medios de contacto como WhatsApp o teléfono.
             </p>
           </section>
           <section>

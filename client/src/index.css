@@ -101,7 +101,7 @@
 
 @keyframes business-gallery-scroll {
   to {
-    transform: translateX(calc(-50% - .5rem));
+    transform: translateX(calc(-50% - 0.5rem));
   }
 }
 

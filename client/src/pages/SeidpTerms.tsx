@@ -5,13 +5,13 @@ export default function SeidpTerms() {
     <PageShell>
       <main className="mx-auto max-w-[900px] px-5 pb-20 sm:px-8 sm:pb-28">
         <section className="pb-10 pt-32 sm:pb-12 sm:pt-40">
-        <h1 className="font-display text-4xl font-semibold leading-[.92] tracking-[-.055em] text-[#12395d] sm:text-6xl">
-          Términos y<br />
-          <span className="italic text-[#0f7065]">condiciones.</span>
-        </h1>
-        <p className="mt-7 text-sm text-[#597286]">
-          Última actualización: 1 de octubre de 2026
-        </p>
+          <h1 className="font-display text-4xl font-semibold leading-[.92] tracking-[-.055em] text-[#12395d] sm:text-6xl">
+            Términos y<br />
+            <span className="italic text-[#0f7065]">condiciones.</span>
+          </h1>
+          <p className="mt-7 text-sm text-[#597286]">
+            Última actualización: 1 de octubre de 2026
+          </p>
         </section>
         <div className="space-y-10 border-t border-[#12395d]/15 pt-10 text-[15px] leading-[1.8] text-[#597286] [&_h2]:font-display [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:text-[#12395d] [&_p]:mt-3">
           <section>
@@ -19,8 +19,8 @@ export default function SeidpTerms() {
             <p>
               Al navegar por este sitio aceptas estos términos y condiciones. Si
               no estás de acuerdo, deja de utilizarlo. El sitio pertenece a
-              Salud e Imagen del Puerto, con domicilio en Puerto
-              Vallarta, Jalisco, México.
+              Salud e Imagen del Puerto, con domicilio en Puerto Vallarta,
+              Jalisco, México.
             </p>
           </section>
           <section>
@@ -72,8 +72,8 @@ export default function SeidpTerms() {
             <p>
               Los enlaces a WhatsApp y redes sociales llevan a servicios
               administrados por terceros, sujetos a sus propios términos y
-              políticas. Salud e Imagen del Puerto no controla su disponibilidad ni el tratamiento
-              que esos servicios hagan de la información.
+              políticas. Salud e Imagen del Puerto no controla su disponibilidad
+              ni el tratamiento que esos servicios hagan de la información.
             </p>
           </section>
           <section>

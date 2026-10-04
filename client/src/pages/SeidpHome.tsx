@@ -1,11 +1,14 @@
-import { ArrowRight, CalendarCheck, ClipboardCheck, HeartPulse, Microscope, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarCheck,
+  ClipboardCheck,
+  HeartPulse,
+  Microscope,
+  ShieldCheck,
+} from "lucide-react";
 import { Link } from "wouter";
 import { AnimatedStat } from "@/components/AnimatedStat";
-import {
-  Eyebrow,
-  PageIntro,
-  PageShell,
-} from "@/components/SeidpLayout";
+import { Eyebrow, PageIntro, PageShell } from "@/components/SeidpLayout";
 
 const steps = [
   [
@@ -35,8 +38,7 @@ const services = [
     description:
       "Ultrasonidos y estudios de imagen con atención cercana y orientación sencilla.",
     href: "/servicios/ultrasonidos",
-    image:
-      "/media/seidp-ultrasonido-obstetrico.webp",
+    image: "/media/seidp-ultrasonido-obstetrico.webp",
     Icon: Microscope,
   },
   {
@@ -45,8 +47,7 @@ const services = [
     description:
       "Pruebas para seguimiento, prevención y apoyo al diagnóstico médico.",
     href: "/servicios/laboratorio-clinico",
-    image:
-      "/media/seidp-laboratorio.webp",
+    image: "/media/seidp-laboratorio.webp",
     Icon: HeartPulse,
   },
   {
@@ -55,8 +56,7 @@ const services = [
     description:
       "Opciones organizadas para revisar tu salud sin esperar a tener síntomas.",
     href: "/prevencion",
-    image:
-      "/media/seidp-prevention-family.webp",
+    image: "/media/seidp-prevention-family.webp",
     Icon: ShieldCheck,
   },
 ] as const;
@@ -174,24 +174,40 @@ export default function SeidpHome() {
             </div>
 
             <div className="mt-12 grid gap-5 md:grid-cols-3">
-              {services.map(({ number, title, description, href, image, Icon }) => (
-                <Link
-                  key={number}
-                  href={href}
-                  className="group overflow-hidden rounded-[20px] bg-white shadow-[0_14px_36px_rgba(18,57,93,.08)] transition-transform hover:-translate-y-1"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#dceef4]">
-                    <img src={image} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
-                    <span className="absolute bottom-4 left-4 grid size-11 place-items-center rounded-full bg-white text-[#0f7065] shadow-lg"><Icon className="size-5" /></span>
-                    <span className="absolute right-4 top-4 text-[10px] font-bold text-white drop-shadow">{number}</span>
-                  </div>
-                  <div className="p-6">
-                    <strong className="block font-display text-2xl font-semibold tracking-[-.04em] text-[#12395d]">{title}</strong>
-                    <span className="mt-2 block text-sm leading-relaxed text-[#597286]">{description}</span>
-                    <ArrowRight className="mt-6 size-5 text-[#0f7065] transition-transform group-hover:translate-x-1" />
-                  </div>
-                </Link>
-              ))}
+              {services.map(
+                ({ number, title, description, href, image, Icon }) => (
+                  <Link
+                    key={number}
+                    href={href}
+                    className="group overflow-hidden rounded-[20px] bg-white shadow-[0_14px_36px_rgba(18,57,93,.08)] transition-transform hover:-translate-y-1"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#dceef4]">
+                      <img
+                        src={image}
+                        alt=""
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span className="absolute bottom-4 left-4 grid size-11 place-items-center rounded-full bg-white text-[#0f7065] shadow-lg">
+                        <Icon className="size-5" />
+                      </span>
+                      <span className="absolute right-4 top-4 text-[10px] font-bold text-white drop-shadow">
+                        {number}
+                      </span>
+                    </div>
+                    <div className="p-6">
+                      <strong className="block font-display text-2xl font-semibold tracking-[-.04em] text-[#12395d]">
+                        {title}
+                      </strong>
+                      <span className="mt-2 block text-sm leading-relaxed text-[#597286]">
+                        {description}
+                      </span>
+                      <ArrowRight className="mt-6 size-5 text-[#0f7065] transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </Link>
+                )
+              )}
             </div>
           </div>
         </section>
@@ -233,7 +249,6 @@ export default function SeidpHome() {
             </div>
           </div>
         </section>
-
       </main>
     </PageShell>
   );
