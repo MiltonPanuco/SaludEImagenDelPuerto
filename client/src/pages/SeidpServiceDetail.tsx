@@ -1,17 +1,10 @@
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  Phone,
-} from "lucide-react";
+import { ArrowDown, ArrowRight, Check, Phone } from "lucide-react";
 import { Link } from "wouter";
 import {
   APPOINTMENT_PHONE,
   Eyebrow,
   PageIntro,
   PageShell,
-  WHATSAPP_URL,
 } from "@/components/SeidpLayout";
 import { services } from "@/serviceData";
 import NotFound from "./NotFound";
@@ -109,16 +102,11 @@ export default function SeidpServiceDetail({
     process,
   } = service;
   const design = editorial[service.slug];
-  const whatsapp = new URL(WHATSAPP_URL);
-  whatsapp.searchParams.set(
-    "text",
-    `Hola, Salud e Imagen del Puerto. Quiero consultar disponibilidad e indicaciones para ${title.toLowerCase()}.`
-  );
 
   return (
     <PageShell darkHeader>
       <main>
-        <section className="relative isolate flex min-h-screen items-end overflow-hidden bg-[#12395d] pb-14 pt-32 text-white sm:pb-20">
+        <section className="relative isolate flex min-h-[68svh] items-end overflow-hidden bg-[#12395d] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
           <img
             src={image}
             alt={alt}
@@ -144,19 +132,10 @@ export default function SeidpServiceDetail({
               className={`mt-8 flex flex-wrap items-center gap-5 ${design.heroAlign === "right" ? "justify-end" : design.heroAlign === "center" ? "justify-center" : ""}`}
             >
               <a
-                href={whatsapp.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-4 rounded-full bg-white px-6 py-4 text-[10px] font-bold uppercase tracking-[.1em] text-[#12395d] transition-colors hover:bg-[#dceef4]"
-              >
-                Consultar este servicio
-                <ArrowUpRight className="size-4" />
-              </a>
-              <a
                 href="#estudios"
-                className="group inline-flex items-center gap-3 rounded-full border border-white/25 px-5 py-3 text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/10 hover:shadow-[0_12px_28px_rgba(0,0,0,.16)]"
+                className="group inline-flex min-h-11 items-center gap-3 rounded-full bg-white px-6 py-3 text-xs font-bold text-[#12395d] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#dceef4]"
               >
-                Conocer más
+                Ver indicaciones
                 <ArrowDown className="size-4 transition-transform duration-300 group-hover:translate-y-1" />
               </a>
             </div>
@@ -181,15 +160,13 @@ export default function SeidpServiceDetail({
                 Confirma con nuestro equipo el servicio que necesitas, su
                 disponibilidad y las indicaciones para tu cita.
               </p>
-              <a
-                href={whatsapp.href}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-7 inline-flex items-center gap-3 border-b border-current/30 pb-2 text-xs font-bold text-[#4291cd]"
+              <Link
+                href="/contacto"
+                className="mt-7 inline-flex min-h-11 items-center gap-3 border-b border-current/30 pb-2 text-sm font-bold text-[#0f7065]"
               >
-                Preguntar por {title.toLowerCase()}
-                <ArrowUpRight className="size-4 shrink-0" />
-              </a>
+                Consultar disponibilidad
+                <ArrowRight className="size-4 shrink-0" />
+              </Link>
             </div>
             <ol
               className={
@@ -325,17 +302,35 @@ export default function SeidpServiceDetail({
                 <p className="mt-3 text-sm text-white/65">
                   Te ayudamos a confirmar disponibilidad y preparación.
                 </p>
+                <dl className="mt-6 grid gap-3 text-xs text-white/75 sm:grid-cols-3">
+                  <div>
+                    <dt className="font-bold text-[#9bc9e7]">Horario</dt>
+                    <dd className="mt-1">
+                      Lun–Vie 8:00–20:00 · Sáb–Dom 8:00–14:00
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-bold text-[#9bc9e7]">Ubicación</dt>
+                    <dd className="mt-1">Calle 10 de Mayo #980, Coapinole</dd>
+                  </div>
+                  <div>
+                    <dt className="font-bold text-[#9bc9e7]">
+                      Antes de acudir
+                    </dt>
+                    <dd className="mt-1">
+                      Confirma cita, preparación y disponibilidad
+                    </dd>
+                  </div>
+                </dl>
               </div>
               <div className="flex flex-col gap-3">
-                <a
-                  href={whatsapp.href}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  href="/contacto"
                   className="inline-flex items-center justify-center gap-5 rounded-full bg-white px-6 py-4 text-xs font-bold text-[#12395d] hover:bg-[#dceef4]"
                 >
-                  Consultar por WhatsApp
-                  <ArrowUpRight className="size-4" />
-                </a>
+                  Ver datos de contacto
+                  <ArrowRight className="size-4" />
+                </Link>
                 <a
                   href={`tel:${APPOINTMENT_PHONE}`}
                   className="inline-flex items-center justify-center gap-3 py-3 text-xs text-white/80"

@@ -3,11 +3,11 @@ import {
   CalendarCheck,
   ClipboardCheck,
   HeartPulse,
+  MessageCircle,
   Microscope,
   ShieldCheck,
 } from "lucide-react";
 import { Link } from "wouter";
-import { AnimatedStat } from "@/components/AnimatedStat";
 import { Eyebrow, PageIntro, PageShell } from "@/components/SeidpLayout";
 
 const steps = [
@@ -65,7 +65,7 @@ export default function SeidpHome() {
   return (
     <PageShell darkHeader>
       <main className="flex flex-col">
-        <section className="order-0 relative flex min-h-screen items-end overflow-hidden bg-[#082b46] pb-14 pt-32 text-white sm:pb-20">
+        <section className="order-0 relative flex min-h-[68svh] items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
           <img
             src="/media/seidp-hero-main.webp"
             alt="Profesional de la salud realizando un estudio de ultrasonido"
@@ -131,21 +131,28 @@ export default function SeidpHome() {
 
         <section
           className="order-2 w-full bg-[#12395d] text-white"
-          aria-label="Salud e Imagen del Puerto en números"
+          aria-label="Nuestro enfoque de atención"
         >
-          <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-6 gap-y-10 px-5 py-16 sm:px-8 lg:grid-cols-4 lg:gap-10 lg:px-12 lg:py-18">
-            <AnimatedStat value={1000} suffix="+" label="Pacientes atendidos" />
-            <AnimatedStat value={3000} suffix="+" label="Estudios de imagen" />
-            <AnimatedStat
-              value={5000}
-              suffix="+"
-              label="Análisis de laboratorio"
-            />
-            <AnimatedStat
-              value={600}
-              suffix="+"
-              label="Evaluaciones preventivas"
-            />
+          <div className="mx-auto grid max-w-[1280px] gap-4 px-5 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12 lg:py-16">
+            {[
+              [HeartPulse, "Atención cercana"],
+              [MessageCircle, "Información clara"],
+              [CalendarCheck, "Orientación antes de tu cita"],
+              [ShieldCheck, "Servicios en un mismo lugar"],
+            ].map(([Icon, label]) => {
+              const BenefitIcon = Icon as typeof HeartPulse;
+              return (
+                <div
+                  key={label as string}
+                  className="flex min-h-24 items-center gap-4 rounded-[18px] border border-white/10 bg-white/5 p-5"
+                >
+                  <BenefitIcon className="size-6 shrink-0 text-[#7ab2db]" />
+                  <p className="font-display text-lg font-semibold leading-tight">
+                    {label as string}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </section>
 

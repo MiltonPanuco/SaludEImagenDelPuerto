@@ -46,7 +46,7 @@ export default function SeidpContactNew() {
   return (
     <PageShell darkHeader>
       <main>
-        <section className="relative isolate flex min-h-screen items-end overflow-hidden bg-[#082b46] pb-14 pt-32 text-white sm:pb-20">
+        <section className="relative isolate flex min-h-[68svh] items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
           <img
             src="/media/seidp-contacto-clinica.webp"
             alt="Entrada de una clínica en Puerto Vallarta"

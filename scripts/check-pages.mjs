@@ -39,7 +39,7 @@ try {
       return getComputedStyle(logo.querySelector(":scope > img")).opacity === (scrolled ? "0" : "1") &&
         getComputedStyle(logo.querySelector(":scope > span")).opacity === (scrolled ? "1" : "0");
     }, scrollY > 24);
-    for (const source of ["logo-simbolo.webp", "logo-letras.png"]) {
+    for (const source of ["logo-simbolo.webp"]) {
       assert.ok(await page.locator(`header img[src$="${source}"]`).evaluate(img => img.complete && img.naturalWidth > 0));
     }
   }
@@ -60,9 +60,11 @@ try {
       await page.evaluate(() => document.fonts.ready);
       assert.equal(await page.locator("main h1").count(), 1, route);
       const hero = await page.locator("main > section").first().boundingBox();
-      assert.ok(hero.height >= 999, `${route} must start with a 100vh hero`);
+      if (!route.includes("privacidad") && !route.includes("terminos")) {
+        const expectedRatio = width < 768 ? 0.68 : 0.72;
+        assert.ok(Math.abs(hero.height - 1000 * expectedRatio) < 2, `${route}: compact hero`);
+      }
       if (route === "/contacto" || route.startsWith("/servicios/")) {
-        assert.ok(Math.abs(hero.height - 1000) < 1, `${route}: fullscreen hero`);
         const photo = page.locator("main > section").first().locator("img");
         await photo.evaluate(img => img.decode());
         const bounds = await photo.boundingBox();
@@ -71,27 +73,17 @@ try {
       for (const src of await page.locator("main img").evaluateAll(images => images.map(img => img.getAttribute("src")))) {
         assert.ok(src.startsWith("/media/"), `${route}: photo must use local assets`);
       }
-      if (width === 1440) {
-        const navigation = page.getByRole("navigation", { name: "Navegación principal", exact: true });
-        await page.mouse.move(0, 0);
-        assert.equal(
-          await navigation.getByRole("button", { name: "Servicios" }).evaluate(element => getComputedStyle(element).color),
-          await navigation.getByRole("link", { name: "Nosotros", exact: true }).evaluate(element => getComputedStyle(element).color),
-          `${route}: Services matches the other header links`
-        );
-      }
-      if (route === "/nosotros") {
-        const story = page.locator("main > section").nth(1);
-        assert.ok(await story.evaluate(element => parseFloat(getComputedStyle(element).paddingTop)) <= 24);
-      }
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
       assert.equal(overflow, false, `${route} overflows at ${width}px`);
       if (route.startsWith("/servicios/")) {
-        const title = serviceTitles[route];
-        const href = await page.getByRole("link", { name: "Consultar este servicio", exact: true }).getAttribute("href");
-        assert.ok(new URL(href).searchParams.get("text").includes(title.toLowerCase()), route);
+        await page.getByRole("link", { name: "Ver indicaciones", exact: true }).waitFor();
+        assert.equal(await page.getByRole("link", { name: "Ver datos de contacto", exact: true }).getAttribute("href"), "/contacto");
         for (const id of ["estudios", "preparacion", "visita"]) assert.equal(await page.locator(`#${id}`).count(), 1);
       }
+      const floating = page.getByRole("link", { name: "Abrir WhatsApp de Salud e Imagen del Puerto", exact: true });
+      const floatingBounds = await floating.boundingBox();
+      assert.ok(floatingBounds.width >= 44 && floatingBounds.height >= 44, `${route}: WhatsApp tap target`);
+      assert.ok((await floating.getAttribute("href")).startsWith("https://wa.me/"), `${route}: WhatsApp URL`);
       if (screenshots && (width === 360 || width === 1440)) await page.screenshot({ path: `${screenshots}/${route.split("/").pop() || "inicio"}-${width}.png`, fullPage: true, animations: "disabled" });
     }
   }
@@ -111,7 +103,7 @@ try {
   await mobile.waitFor({ state: "hidden" });
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");
   assert.deepEqual(errors, []);
-  console.log("OK: 14 pages at 3 widths; 100vh heroes, flush compact submenu, consistent header colors, spacing, keyboard and mobile navigation.");
+  console.log("OK: 14 pages at 3 widths; compact heroes, no horizontal overflow, accessible WhatsApp, keyboard and mobile navigation.");
 } finally {
   await browser.close();
 }

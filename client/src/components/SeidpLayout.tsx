@@ -134,7 +134,7 @@ function SocialLinks({ dark = true }: { dark?: boolean }) {
           target="_blank"
           rel="noreferrer"
           aria-label={label}
-          className={`grid size-10 place-items-center rounded-full border transition-all duration-300 ease-out hover:-translate-y-1 ${dark ? "border-white/20 text-white hover:border-[#7ab2db] hover:bg-white hover:text-[#12395d]" : "border-[#12395d]/20 text-[#12395d] hover:border-[#0f7065] hover:bg-[#0f7065] hover:text-white"}`}
+          className={`grid size-11 place-items-center rounded-full border transition-all duration-300 ease-out hover:-translate-y-1 ${dark ? "border-white/20 text-white hover:border-[#7ab2db] hover:bg-white hover:text-[#12395d]" : "border-[#12395d]/20 text-[#12395d] hover:border-[#0f7065] hover:bg-[#0f7065] hover:text-white"}`}
         >
           <Icon className="size-[18px]" />
         </a>
@@ -181,6 +181,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
 
   const isDark = true;
   const transparentAtTop = dark && !scrolled && !open;
+  const servicesActive = location.startsWith("/servicios");
   const currentUrl = new URL(window.location.href);
   const isEnglish =
     currentUrl.hostname.endsWith(".translate.goog") ||
@@ -220,7 +221,8 @@ export function Header({ dark = false }: { dark?: boolean }) {
                   <PopoverTrigger asChild>
                     <button
                       type="button"
-                      className={`flex min-h-11 items-center gap-1.5 text-[10px] font-bold uppercase tracking-[.13em] transition-colors ${isDark ? "text-white/70 hover:text-white" : "text-[#597286] hover:text-[#12395d]"}`}
+                      aria-current={servicesActive ? "page" : undefined}
+                      className={`flex min-h-11 items-center gap-1.5 border-b-2 text-[11px] font-bold uppercase tracking-[.13em] transition-colors ${servicesActive ? "border-[#7ab2db] text-white" : "border-transparent text-white/75 hover:text-white"}`}
                     >
                       {label}
                       <ChevronDown
@@ -278,7 +280,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
                   key={href}
                   href={href}
                   aria-current={location === href ? "page" : undefined}
-                  className={`inline-flex items-center text-[10px] font-bold uppercase tracking-[.13em] transition-colors ${isDark ? "text-white/70 hover:text-white" : "text-[#597286] hover:text-[#12395d]"}`}
+                  className="inline-flex min-h-11 items-center border-b-2 border-transparent text-[11px] font-bold uppercase tracking-[.13em] text-white/75 transition-colors hover:text-white aria-[current=page]:border-[#7ab2db] aria-[current=page]:text-white"
                 >
                   {label}
                 </Link>
@@ -288,7 +290,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
           <div className="flex items-center justify-self-end gap-2">
             <a
               href={languageUrl}
-              className={`grid h-10 min-w-10 place-items-center rounded-full border px-3 text-[10px] font-bold tracking-[.12em] transition-colors ${isDark ? "border-white/30 text-white hover:bg-white hover:text-[#12395d]" : "border-[#12395d]/20 text-[#12395d] hover:bg-[#12395d] hover:text-white"}`}
+              className={`grid h-11 min-w-11 place-items-center rounded-full border px-3 text-[10px] font-bold tracking-[.12em] transition-colors ${isDark ? "border-white/30 text-white hover:bg-white hover:text-[#12395d]" : "border-[#12395d]/20 text-[#12395d] hover:bg-[#12395d] hover:text-white"}`}
               aria-label={isEnglish ? "Cambiar a español" : "Change to English"}
             >
               {isEnglish ? "ES" : "EN"}
@@ -296,7 +298,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
             <button
               type="button"
               onClick={() => setOpen(value => !value)}
-              className={`grid size-10 place-items-center rounded-full border lg:hidden ${isDark ? "border-white/30 text-white" : "border-[#12395d]/20 text-[#12395d]"}`}
+              className={`grid size-11 place-items-center rounded-full border lg:hidden ${isDark ? "border-white/30 text-white" : "border-[#12395d]/20 text-[#12395d]"}`}
               aria-expanded={open}
               aria-controls="menu-movil"
               aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -325,7 +327,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
                     onClick={() => setServicesOpen(value => !value)}
                     aria-expanded={servicesOpen}
                     aria-controls="servicios-movil"
-                    className="flex w-full items-center justify-center gap-2 py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] text-white transition-colors hover:text-[#7ab2db]"
+                    className={`flex min-h-12 w-full items-center justify-center gap-2 py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] transition-colors hover:text-[#7ab2db] ${servicesActive ? "text-[#7ab2db]" : "text-white"}`}
                   >
                     {label}
                     <ChevronDown
@@ -362,7 +364,8 @@ export function Header({ dark = false }: { dark?: boolean }) {
                 <Link
                   key={href}
                   href={href}
-                  className="block w-full py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] text-white transition-colors hover:text-[#7ab2db]"
+                  aria-current={location === href ? "page" : undefined}
+                  className="block min-h-12 w-full py-2 font-display text-[clamp(1.5rem,6vw,2.15rem)] font-semibold tracking-[-.05em] text-white transition-colors hover:text-[#7ab2db] aria-[current=page]:text-[#7ab2db]"
                 >
                   {label}
                 </Link>
@@ -402,7 +405,7 @@ export function PageIntro({
     >
       {eyebrow && (
         <p
-          className={`mb-4 flex items-center gap-2.5 text-[9px] font-bold uppercase tracking-[0.2em] ${centered ? "justify-center" : right ? "justify-end" : ""} ${dark ? "text-[#7ab2db]" : "text-[#0f7065]"}`}
+          className={`mb-4 flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-[0.2em] ${centered ? "justify-center" : right ? "justify-end" : ""} ${dark ? "text-[#9bc9e7]" : "text-[#0f7065]"}`}
         >
           <span
             className={`h-px w-8 ${dark ? "bg-[#7ab2db]" : "bg-[#4291cd]"}`}
@@ -424,7 +427,7 @@ export function PageIntro({
       </h1>
       {description && (
         <p
-          className={`mt-6 max-w-lg text-[15px] leading-relaxed ${centered ? "mx-auto" : right ? "ml-auto" : ""} ${dark ? "text-white/65" : "text-[#597286]"}`}
+          className={`mt-6 max-w-lg text-base leading-relaxed ${centered ? "mx-auto" : right ? "ml-auto" : ""} ${dark ? "text-white/80" : "text-[#597286]"}`}
         >
           {description}
         </p>
@@ -561,7 +564,7 @@ export function FloatingWhatsApp() {
       href={WHATSAPP_URL}
       target="_blank"
       rel="noreferrer"
-      className="fixed bottom-[22px] right-[22px] z-40 grid size-13 place-items-center rounded-full bg-[#0f7065] text-white shadow-[0_14px_28px_rgba(15,112,101,.28)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_34px_rgba(15,112,101,.35)] max-sm:bottom-3.5 max-sm:right-3.5"
+      className="fixed bottom-[max(14px,env(safe-area-inset-bottom))] right-[max(14px,env(safe-area-inset-right))] z-40 grid size-13 place-items-center rounded-full bg-[#0f7065] text-white shadow-[0_14px_28px_rgba(15,112,101,.28)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_34px_rgba(15,112,101,.35)]"
       aria-label="Abrir WhatsApp de Salud e Imagen del Puerto"
     >
       <WhatsAppIcon className="size-6" />

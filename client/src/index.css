@@ -83,6 +83,11 @@
     @apply text-inherit no-underline;
   }
 
+  :focus-visible {
+    outline: 3px solid #7ab2db;
+    outline-offset: 3px;
+  }
+
   ::selection {
     background: #7ab2db;
     color: #082b46;

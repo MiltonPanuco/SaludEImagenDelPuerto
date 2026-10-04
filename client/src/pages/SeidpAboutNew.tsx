@@ -60,7 +60,7 @@ export default function SeidpAboutNew() {
   return (
     <PageShell darkHeader>
       <main className="flex flex-col">
-        <section className="relative isolate flex min-h-screen items-end overflow-hidden bg-[#082b46] pb-6 pt-36 text-white sm:pb-8">
+        <section className="relative isolate flex min-h-[68svh] items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
           <img
             src="/media/seidp-consulta-medica.webp"
             alt="Profesional de la salud conversando con una paciente"
