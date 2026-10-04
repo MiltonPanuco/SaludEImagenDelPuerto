@@ -11,12 +11,6 @@ import {
   Utensils,
 } from "lucide-react";
 import { Link } from "wouter";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Eyebrow, PageIntro, PageShell } from "@/components/SeidpLayout";
 
 const needs = [
@@ -43,33 +37,6 @@ const orientationCards = [
     MessageCircle,
     "Recibe orientación de nuestro equipo",
     "Confirma requisitos, preparación y disponibilidad antes de acudir al centro.",
-  ],
-] as const;
-
-const questions = [
-  [
-    "¿Necesito cita previa?",
-    "Confirma disponibilidad y cita con nuestro equipo antes de acudir.",
-  ],
-  [
-    "¿Qué debo llevar?",
-    "Lleva tu identificación, la orden médica si cuentas con una y estudios previos relacionados.",
-  ],
-  [
-    "¿Todos los estudios requieren preparación?",
-    "No. La preparación depende de cada estudio. Confirma la indicación específica con nuestro equipo.",
-  ],
-  [
-    "¿Puedo consultar qué opción me conviene?",
-    "Sí. Podemos orientarte sobre la información disponible; la elección clínica debe considerar la valoración de un profesional de la salud.",
-  ],
-  [
-    "¿Cuánto tiempo toma la visita?",
-    "El tiempo depende de los estudios que se realicen. Confirma este dato con nuestro equipo.",
-  ],
-  [
-    "¿Cuándo recibiré orientación sobre mis resultados?",
-    "Los tiempos y el seguimiento dependen de cada estudio. Confirma este dato con nuestro equipo.",
   ],
 ] as const;
 
@@ -322,45 +289,22 @@ export default function SeidpPreventionNew() {
           </div>
         </section>
 
-        <section
-          className="bg-[#fbfdfe] py-16 sm:py-24"
-          aria-labelledby="preguntas-prevencion"
-        >
+        <section className="bg-[#fbfdfe] py-16 sm:py-20">
           <div className="mx-auto max-w-[980px] px-5 sm:px-8 lg:px-12">
-            <div className="max-w-2xl">
-              <Eyebrow>Antes de tu visita</Eyebrow>
-              <h2
-                id="preguntas-prevencion"
-                className="font-display text-4xl font-semibold leading-[.98] tracking-[-.05em] text-[#12395d] sm:text-5xl"
+            <div className="max-w-2xl border-l-2 border-[#4291cd] pl-6">
+              <Eyebrow>Antes de elegir una opción preventiva</Eyebrow>
+              <p className="mt-4 text-base leading-relaxed text-[#597286]">
+                La preparación, los requisitos y los estudios adecuados se
+                confirman de manera individual con nuestro equipo.
+              </p>
+              <Link
+                href="/contacto#preguntas-frecuentes"
+                className="mt-5 inline-flex min-h-11 items-center gap-2 font-bold text-[#0f7065] hover:text-[#12395d]"
               >
-                Preguntas frecuentes sobre prevención.
-              </h2>
+                Consulta las preguntas frecuentes
+                <ArrowRight className="size-4" />
+              </Link>
             </div>
-            <Accordion
-              type="single"
-              collapsible
-              className="mt-10 border-t border-[#12395d]/15"
-            >
-              {questions.map(([question, answer], index) => (
-                <AccordionItem
-                  key={question}
-                  value={question}
-                  className="border-[#12395d]/15"
-                >
-                  <AccordionTrigger className="min-h-14 gap-4 py-5 text-left font-display text-lg font-semibold text-[#12395d] hover:no-underline [&>svg]:text-[#0f7065]">
-                    <span className="flex items-baseline gap-4">
-                      <span className="font-sans text-[10px] text-[#0f7065]">
-                        0{index + 1}
-                      </span>
-                      {question}
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="max-w-2xl pb-6 pl-7 text-sm leading-relaxed text-[#597286]">
-                    {answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
           </div>
         </section>
       </main>

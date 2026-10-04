@@ -101,14 +101,14 @@ export function Logo({
   return (
     <Link
       href="/"
-      className={`relative inline-flex shrink-0 items-center transition-[width,height] duration-300 motion-reduce:transition-none ${compact ? "h-11 w-9 sm:h-12 sm:w-10" : "h-14 w-14 sm:h-24 sm:w-24"}`}
+      className={`relative inline-flex shrink-0 items-center transition-[width,height] duration-300 motion-reduce:transition-none ${compact ? "h-12 w-10 sm:h-14 sm:w-12" : "h-16 w-16 sm:h-[6.5rem] sm:w-[6.5rem]"}`}
       aria-label="Salud e Imagen del Puerto, inicio"
     >
       <img
         src={white ? "/brand/logo-white.webp" : "/brand/logo-fondo-blanco.webp"}
         alt=""
         aria-hidden="true"
-        className={`absolute left-0 top-1/2 h-14 w-auto -translate-y-1/2 object-contain transition-[opacity,transform] duration-300 motion-reduce:transition-none sm:h-24 ${compact ? "scale-90 opacity-0" : "scale-100 opacity-100"}`}
+        className={`absolute left-0 top-1/2 h-16 w-auto -translate-y-1/2 object-contain transition-[opacity,transform] duration-300 motion-reduce:transition-none sm:h-[6.5rem] ${compact ? "scale-90 opacity-0" : "scale-100 opacity-100"}`}
       />
       <span
         aria-hidden="true"
@@ -222,9 +222,13 @@ export function Header({ dark = false }: { dark?: boolean }) {
                     <button
                       type="button"
                       aria-current={servicesActive ? "page" : undefined}
-                      className={`flex min-h-11 items-center gap-1.5 border-b-2 text-[11px] font-bold uppercase tracking-[.13em] transition-colors ${servicesActive ? "border-[#7ab2db] text-white" : "border-transparent text-white/75 hover:text-white"}`}
+                      className={`flex min-h-11 items-center gap-1.5 text-[11px] font-bold uppercase tracking-[.13em] transition-colors ${servicesActive ? "text-white" : "text-white/75 hover:text-white"}`}
                     >
-                      {label}
+                      <span
+                        className={`relative py-1 after:absolute after:-bottom-1 after:left-1/2 after:h-0.5 after:-translate-x-1/2 after:bg-[#7ab2db] after:transition-[width] after:duration-200 ${servicesActive ? "after:w-[calc(100%-4px)]" : "after:w-0"}`}
+                      >
+                        {label}
+                      </span>
                       <ChevronDown
                         className={`size-3.5 transition-transform ${desktopServicesOpen ? "rotate-180" : ""}`}
                       />
@@ -280,9 +284,13 @@ export function Header({ dark = false }: { dark?: boolean }) {
                   key={href}
                   href={href}
                   aria-current={location === href ? "page" : undefined}
-                  className="inline-flex min-h-11 items-center border-b-2 border-transparent text-[11px] font-bold uppercase tracking-[.13em] text-white/75 transition-colors hover:text-white aria-[current=page]:border-[#7ab2db] aria-[current=page]:text-white"
+                  className="inline-flex min-h-11 items-center text-[11px] font-bold uppercase tracking-[.13em] text-white/75 transition-colors hover:text-white aria-[current=page]:text-white"
                 >
-                  {label}
+                  <span
+                    className={`relative py-1 after:absolute after:-bottom-1 after:left-1/2 after:h-0.5 after:-translate-x-1/2 after:bg-[#7ab2db] after:transition-[width] after:duration-200 ${location === href ? "after:w-[calc(100%-4px)]" : "after:w-0"}`}
+                  >
+                    {label}
+                  </span>
                 </Link>
               )
             )}
@@ -418,11 +426,14 @@ export function PageIntro({
       >
         {title}
         {italic && (
+          <>
+            {" "}
           <span
             className={`mt-2 block max-w-full break-words text-[clamp(1.85rem,3.6vw,3.5rem)] leading-[1] italic ${dark ? "text-[#7ab2db]" : "text-[#0f7065]"}`}
           >
             {italic}
           </span>
+          </>
         )}
       </h1>
       {description && (

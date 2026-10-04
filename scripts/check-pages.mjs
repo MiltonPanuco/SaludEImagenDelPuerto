@@ -61,8 +61,15 @@ try {
       assert.equal(await page.locator("main h1").count(), 1, route);
       const hero = await page.locator("main > section").first().boundingBox();
       if (!route.includes("privacidad") && !route.includes("terminos")) {
-        const expectedRatio = width < 768 ? 0.68 : 0.72;
-        assert.ok(Math.abs(hero.height - 1000 * expectedRatio) < 2, `${route}: compact hero`);
+        const expectedRatio = route === "/" ? 1 : width < 768 ? 0.68 : 0.72;
+        assert.ok(Math.abs(hero.height - 1000 * expectedRatio) < 2, `${route}: hero height`);
+      }
+      assert.doesNotMatch(await page.locator("main h1").innerText(), /mereceverse|tambiénes/i, `${route}: heading words stay separated`);
+      if (route === "/") {
+        await page.evaluate(() => window.scrollTo(0, 100));
+        await page.waitForFunction(() => Math.abs(document.querySelector("[data-home-hero]").getBoundingClientRect().height - innerHeight * 0.72) < 2);
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.waitForFunction(() => Math.abs(document.querySelector("[data-home-hero]").getBoundingClientRect().height - innerHeight) < 2);
       }
       if (route === "/contacto" || route.startsWith("/servicios/")) {
         const photo = page.locator("main > section").first().locator("img");
@@ -79,6 +86,17 @@ try {
         await page.getByRole("link", { name: "Ver indicaciones", exact: true }).waitFor();
         assert.equal(await page.getByRole("link", { name: "Ver datos de contacto", exact: true }).getAttribute("href"), "/contacto");
         for (const id of ["estudios", "preparacion", "visita"]) assert.equal(await page.locator(`#${id}`).count(), 1);
+      }
+      if (route === "/prevencion") {
+        assert.equal(await page.locator('[data-slot="accordion"]').count(), 0, "FAQ only lives on Contacto");
+        assert.equal(await page.getByRole("link", { name: "Consulta las preguntas frecuentes", exact: true }).getAttribute("href"), "/contacto#preguntas-frecuentes");
+      }
+      if (route === "/contacto") {
+        assert.equal(await page.locator("#preguntas-frecuentes").count(), 1);
+        assert.equal(await page.getByRole("button", { name: /¿Cómo confirmo la preparación/ }).count(), 1);
+        for (const action of ["Cómo llegar", "Llamar", "Consultar por WhatsApp"]) {
+          assert.ok(await page.getByRole("link", { name: action, exact: true }).count(), `Contacto: ${action}`);
+        }
       }
       const floating = page.getByRole("link", { name: "Abrir WhatsApp de Salud e Imagen del Puerto", exact: true });
       const floatingBounds = await floating.boundingBox();
@@ -103,7 +121,7 @@ try {
   await mobile.waitFor({ state: "hidden" });
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");
   assert.deepEqual(errors, []);
-  console.log("OK: 14 pages at 3 widths; compact heroes, no horizontal overflow, accessible WhatsApp, keyboard and mobile navigation.");
+  console.log("OK: 14 pages at 3 widths; responsive heroes, one FAQ, no horizontal overflow, accessible WhatsApp, keyboard and mobile navigation.");
 } finally {
   await browser.close();
 }

@@ -33,6 +33,10 @@ const questions = [
     "Avísanos si estás embarazada o podrías estarlo, si tienes alergias, implantes, marcapasos o tomas medicamentos relevantes.",
   ],
   [
+    "¿Cómo confirmo la preparación?",
+    "La preparación cambia según el estudio. Escríbenos o llama antes de acudir y te confirmaremos las indicaciones correspondientes.",
+  ],
+  [
     "¿Atienden fines de semana?",
     "Sí. Sábado y domingo atendemos de 8:00 a. m. a 2:00 p. m., sujeto a disponibilidad.",
   ],
@@ -162,32 +166,42 @@ export default function SeidpContactNew() {
           id="encuentranos"
           className="scroll-mt-24 bg-[#082b46] py-16 text-white sm:py-24"
         >
-          <div className="mx-auto grid max-w-[1280px] gap-10 px-5 sm:px-8 lg:grid-cols-[1.35fr_.65fr] lg:items-stretch lg:gap-0 lg:px-12">
-            <div className="min-h-[420px] overflow-hidden rounded-[24px] bg-[#dceef4] lg:rounded-r-none">
+          <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-12">
+            <div className="grid gap-6 lg:grid-cols-[1.35fr_.65fr] lg:items-stretch lg:gap-0">
+            <div className="order-2 min-h-[360px] overflow-hidden rounded-[24px] bg-[#dceef4] lg:order-1 lg:min-h-[460px] lg:rounded-r-none">
               <iframe
                 title="Ubicación de Salud e Imagen del Puerto"
                 src="https://www.google.com/maps?q=Calle%2010%20de%20Mayo%20980%2C%20Coapinole%2C%20Puerto%20Vallarta%2C%20Jalisco&z=16&output=embed"
-                className="h-full min-h-[420px] w-full border-0"
+                className="h-full min-h-[360px] w-full border-0 lg:min-h-[460px]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-            <div className="flex flex-col justify-between rounded-[24px] bg-[#12395d] p-7 sm:p-10 lg:rounded-l-none">
+            <div className="order-1 flex flex-col justify-between rounded-[24px] bg-[#12395d] p-7 sm:p-10 lg:order-2 lg:rounded-l-none">
               <div>
                 <Eyebrow light>Encuéntranos</Eyebrow>
-                <h2 className="font-display text-4xl font-semibold leading-[1] tracking-[-.05em]">
-                  Cerca de tu día a día.
+                <h2 className="font-display text-4xl font-semibold leading-[1] tracking-[-.05em] sm:text-5xl">
+                  Visítanos en Puerto Vallarta.
                 </h2>
+                <p className="mt-5 text-sm leading-relaxed text-white/70">
+                  Encuentra nuestra clínica, consulta los horarios y abre la
+                  ruta desde tu teléfono.
+                </p>
                 <a
                   href="https://maps.app.goo.gl/EnPoYMCfZ6Cm4Fzs7"
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-7 flex items-start gap-3 text-sm leading-relaxed text-white/65 transition-colors hover:text-white"
+                  className="mt-7 flex items-start gap-3 text-sm leading-relaxed text-white/70 transition-colors hover:text-white"
                 >
                   <MapPin className="mt-0.5 size-5 shrink-0 text-[#7ab2db]" />
                   <span>
-                    Calle 10 de Mayo #980, entre Guatemala y Brasil, Colonia
-                    Coapinole, Puerto Vallarta.
+                    Calle 10 de Mayo #980
+                    <br />
+                    Entre Guatemala y Brasil
+                    <br />
+                    Colonia Coapinole
+                    <br />
+                    Puerto Vallarta, Jalisco
                   </span>
                 </a>
               </div>
@@ -201,17 +215,45 @@ export default function SeidpContactNew() {
                   <dd className="font-semibold">8:00 a. m. - 2:00 p. m.</dd>
                 </div>
               </dl>
+              <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                <a
+                  href="https://maps.app.goo.gl/EnPoYMCfZ6Cm4Fzs7"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-[#12395d] transition-colors hover:bg-[#dceef4]"
+                >
+                  Cómo llegar <ArrowUpRight className="size-4" />
+                </a>
+                <a
+                  href={`tel:${APPOINTMENT_PHONE}`}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/25 px-4 text-xs font-bold text-white transition-colors hover:bg-white/10"
+                >
+                  Llamar <Phone className="size-4" />
+                </a>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/25 px-4 text-xs font-bold text-white transition-colors hover:bg-white/10"
+                >
+                  Consultar por WhatsApp <WhatsAppIcon className="size-4" />
+                </a>
+              </div>
+            </div>
             </div>
           </div>
         </section>
-        <section className="bg-[#f4f8fa] py-16 sm:py-24">
+        <section
+          id="preguntas-frecuentes"
+          className="scroll-mt-24 bg-[#f4f8fa] py-16 sm:py-24"
+        >
           <div className="mx-auto max-w-[980px] px-5 sm:px-8 lg:px-12">
             <div className="mx-auto max-w-2xl text-center">
               <div className="flex justify-center">
-                <Eyebrow>Antes de tu visita</Eyebrow>
+                <Eyebrow>Preguntas frecuentes</Eyebrow>
               </div>
               <h2 className="font-display text-4xl font-semibold leading-[1] tracking-[-.05em] text-[#12395d] sm:text-5xl">
-                Respuestas claras, sin darle más vueltas.
+                Respuestas claras antes de agendar o acudir al centro.
               </h2>
               <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-[#597286]">
                 Lo más consultado antes de agendar o acudir al centro.

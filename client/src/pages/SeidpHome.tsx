@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   CalendarCheck,
@@ -62,10 +63,37 @@ const services = [
 ] as const;
 
 export default function SeidpHome() {
+  const [compactHero, setCompactHero] = useState(false);
+
+  useEffect(() => {
+    let frame = 0;
+    const updateHero = () => {
+      frame = 0;
+      setCompactHero((current) => {
+        if (window.scrollY <= 4) return false;
+        if (window.scrollY >= 64) return true;
+        return current;
+      });
+    };
+    const handleScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateHero);
+    };
+
+    updateHero();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <PageShell darkHeader>
       <main className="flex flex-col">
-        <section className="order-0 relative flex min-h-[68svh] items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
+        <section
+          data-home-hero
+          className={`order-0 relative flex items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white transition-[min-height] duration-700 ease-out motion-reduce:transition-none sm:pb-16 ${compactHero ? "min-h-[72svh]" : "min-h-screen min-h-[100svh]"}`}
+        >
           <img
             src="/media/seidp-hero-main.webp"
             alt="Profesional de la salud realizando un estudio de ultrasonido"
