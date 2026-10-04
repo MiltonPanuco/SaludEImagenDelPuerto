@@ -23,25 +23,32 @@ const featuredSlugs = [
 
 const practicalInfo: Record<string, readonly string[]> = {
   radiografias: [
-    "Confirma tu cita",
-    "Consulta preparación",
-    "Confirma disponibilidad",
+    "Ubica el área a estudiar",
+    "Retira objetos metálicos",
+    "Informa si hay embarazo",
   ],
   ultrasonidos: [
-    "Cita previa",
-    "Preparación según el estudio",
-    "Confirma disponibilidad",
+    "Ayuno según el estudio",
+    "Vejiga llena si se indica",
+    "Lleva estudios previos",
   ],
   electrocardiogramas: [
-    "Confirma tu cita",
-    "Consulta indicaciones",
-    "Confirma disponibilidad",
+    "Usa ropa cómoda",
+    "Evita crema en el pecho",
+    "Registro en reposo",
   ],
   "laboratorio-clinico": [
-    "Confirma tu cita",
-    "Preparación según el análisis",
-    "Confirma disponibilidad",
+    "Ayuno sólo si se indica",
+    "Identifica tu análisis",
+    "Pregunta por la entrega",
   ],
+};
+
+const featuredAction: Record<string, string> = {
+  radiografias: "Ver tipos de radiografía",
+  ultrasonidos: "Conocer ultrasonidos",
+  electrocardiogramas: "Conocer el estudio",
+  "laboratorio-clinico": "Consultar análisis",
 };
 
 const groups = [
@@ -158,8 +165,8 @@ export default function SeidpServicesHub() {
                 Conoce nuestros servicios principales.
               </h2>
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#597286]">
-                Revisa qué ofrece cada estudio y confirma con nuestro equipo la
-                preparación, los requisitos y la disponibilidad antes de acudir.
+                Compara en un vistazo qué evalúa cada estudio y las indicaciones
+                que conviene considerar antes de acudir.
               </p>
             </div>
             <div className="mt-12 grid gap-5 lg:grid-cols-2">
@@ -211,7 +218,7 @@ export default function SeidpServicesHub() {
                         href={`/servicios/${slug}`}
                         className="mt-7 inline-flex min-h-11 w-fit items-center gap-2 font-bold text-[#0f7065] hover:text-[#12395d]"
                       >
-                        Ver indicaciones <ArrowRight className="size-4" />
+                        {featuredAction[slug]} <ArrowRight className="size-4" />
                       </Link>
                     </div>
                   </article>
@@ -278,7 +285,7 @@ export default function SeidpServicesHub() {
                           .map(slug =>
                             services.find(service => service.slug === slug)!
                           )
-                          .map(({ slug, title, short, Icon: ServiceIcon }) => (
+                          .map(({ slug, title, Icon: ServiceIcon }) => (
                             <Link
                               key={slug}
                               href={`/servicios/${slug}`}
@@ -287,14 +294,9 @@ export default function SeidpServicesHub() {
                               <span className="grid size-11 place-items-center rounded-full bg-white text-[#0f7065]">
                                 <ServiceIcon className="size-5" />
                               </span>
-                              <span>
-                                <strong className="block text-base text-[#12395d]">
-                                  {title}
-                                </strong>
-                                <span className="mt-1 hidden text-sm text-[#597286] sm:block">
-                                  {short}
-                                </span>
-                              </span>
+                              <strong className="block text-base text-[#12395d]">
+                                {title}
+                              </strong>
                               <span className="flex items-center gap-2 text-sm font-bold text-[#0f7065]">
                                 Detalles{" "}
                                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
@@ -333,7 +335,7 @@ export default function SeidpServicesHub() {
           </div>
         </section>
 
-        <section className="bg-[#082b46] py-16 text-white sm:py-20">
+        <section className="bg-[#12395d] py-16 text-white sm:py-20">
           <div className="mx-auto grid max-w-[1180px] gap-10 px-5 sm:px-8 lg:grid-cols-[.85fr_1.15fr] lg:items-center lg:px-12">
             <div>
               <Eyebrow light>¿No sabes qué estudio necesitas?</Eyebrow>
@@ -347,7 +349,7 @@ export default function SeidpServicesHub() {
               </p>
               <Link
                 href="/contacto"
-                className="mt-7 inline-flex min-h-11 items-center gap-2 font-bold text-[#7ab2db] hover:text-white"
+                className="mt-7 inline-flex min-h-11 items-center gap-2 font-bold text-[#9bc9e7] hover:text-white"
               >
                 Consulta nuestros datos de contacto{" "}
                 <ArrowRight className="size-4" />
@@ -363,10 +365,10 @@ export default function SeidpServicesHub() {
                 return (
                   <div
                     key={number as string}
-                    className="rounded-[18px] border border-white/12 bg-white/5 p-5"
+                    className="rounded-[18px] border border-white/15 bg-[#082b46]/25 p-5"
                   >
-                    <StepIcon className="size-5 text-[#7ab2db]" />
-                    <span className="mt-8 block text-[10px] font-bold text-white/40">
+                    <StepIcon className="size-5 text-[#9bc9e7]" />
+                    <span className="mt-8 block text-[10px] font-bold text-white/50">
                       {number as string}
                     </span>
                     <p className="mt-2 font-display text-lg font-semibold">

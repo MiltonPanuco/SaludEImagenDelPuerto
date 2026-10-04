@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowRight, ChevronDown, MapPin, Menu, X } from "lucide-react";
+import { ArrowRight, ChevronDown, MapPin, Menu, Phone, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { services } from "@/serviceData";
 import {
@@ -69,6 +69,11 @@ const socialLinks = [
   { href: INSTAGRAM_URL, label: "Instagram", Icon: InstagramIcon },
   { href: WHATSAPP_URL, label: "WhatsApp", Icon: WhatsAppIcon },
   { href: MAP_URL, label: "Google Maps", Icon: MapPin },
+  {
+    href: `tel:${APPOINTMENT_PHONE}`,
+    label: "Llamar a Salud e Imagen del Puerto",
+    Icon: Phone,
+  },
 ];
 
 export function WhatsAppButton({
@@ -101,23 +106,34 @@ export function Logo({
   return (
     <Link
       href="/"
-      className={`relative inline-flex shrink-0 items-center transition-[width,height] duration-300 motion-reduce:transition-none ${compact ? "h-12 w-10 sm:h-14 sm:w-12" : "h-16 w-16 sm:h-[6.5rem] sm:w-[6.5rem]"}`}
+      className={`group/logo relative inline-flex h-14 w-12 shrink-0 items-center overflow-visible transition-[width,height] duration-150 ease-out motion-reduce:transition-none ${compact ? "lg:h-14 lg:w-12" : "lg:h-[6.5rem] lg:w-[6.5rem]"}`}
+      data-compact={compact}
       aria-label="Salud e Imagen del Puerto, inicio"
     >
       <img
         src={white ? "/brand/logo-white.webp" : "/brand/logo-fondo-blanco.webp"}
         alt=""
         aria-hidden="true"
-        className={`absolute left-0 top-1/2 h-16 w-auto -translate-y-1/2 object-contain transition-[opacity,transform] duration-300 motion-reduce:transition-none sm:h-[6.5rem] ${compact ? "scale-90 opacity-0" : "scale-100 opacity-100"}`}
+        className={`absolute left-0 top-1/2 hidden h-[6.5rem] w-auto -translate-y-1/2 object-contain transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none lg:block ${compact ? "scale-95 opacity-0" : "scale-100 opacity-100"}`}
       />
       <span
         aria-hidden="true"
-        className={`absolute inset-0 transition-[opacity,transform] duration-300 motion-reduce:transition-none ${compact ? "scale-100 opacity-100" : "scale-90 opacity-0"} ${white ? "" : "brightness-0"}`}
+        className={`absolute inset-0 scale-100 opacity-100 transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none ${compact ? "lg:scale-100 lg:opacity-100 lg:delay-75" : "lg:scale-95 lg:opacity-0"} ${white ? "" : "brightness-0"}`}
       >
         <img
           src="/brand/logo-simbolo.webp"
           alt=""
           className="size-full object-contain"
+        />
+      </span>
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute left-[calc(100%-.35rem)] top-1/2 h-9 w-40 -translate-y-1/2 overflow-hidden opacity-100 [clip-path:inset(0_0_0_0)] transition-[clip-path,opacity] duration-250 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none sm:h-10 ${compact ? "lg:opacity-0 lg:[clip-path:inset(0_100%_0_0)] lg:group-hover/logo:opacity-100 lg:group-hover/logo:[clip-path:inset(0_0_0_0)] lg:group-focus-visible/logo:opacity-100 lg:group-focus-visible/logo:[clip-path:inset(0_0_0_0)]" : "lg:invisible lg:opacity-0"}`}
+      >
+        <img
+          src="/brand/logo-letras.webp"
+          alt=""
+          className="absolute left-0 top-1/2 w-40 max-w-none -translate-y-1/2"
         />
       </span>
     </Link>
@@ -131,14 +147,94 @@ function SocialLinks({ dark = true }: { dark?: boolean }) {
         <a
           key={label}
           href={href}
-          target="_blank"
-          rel="noreferrer"
+          target={href.startsWith("http") ? "_blank" : undefined}
+          rel={href.startsWith("http") ? "noreferrer" : undefined}
           aria-label={label}
           className={`grid size-11 place-items-center rounded-full border transition-all duration-300 ease-out hover:-translate-y-1 ${dark ? "border-white/20 text-white hover:border-[#7ab2db] hover:bg-white hover:text-[#12395d]" : "border-[#12395d]/20 text-[#12395d] hover:border-[#0f7065] hover:bg-[#0f7065] hover:text-white"}`}
         >
           <Icon className="size-[18px]" />
         </a>
       ))}
+    </div>
+  );
+}
+
+export function SharedScrollBackground({
+  src,
+  alt,
+  endRef,
+  name,
+  imageClassName = "opacity-65",
+}: {
+  src: string;
+  alt: string;
+  endRef: React.RefObject<HTMLElement | null>;
+  name: string;
+  imageClassName?: string;
+}) {
+  const layerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  useLayoutEffect(() => {
+    const layer = layerRef.current;
+    const image = imageRef.current;
+    if (!layer || !image) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    let current = 0;
+    let target = 0;
+    let frame = 0;
+    const render = () => {
+      current += (target - current) * 0.1;
+      image.style.transform = `translate3d(0, 0, 0) scale(${1.04 + current * 0.1})`;
+      if (Math.abs(target - current) > 0.001) {
+        frame = window.requestAnimationFrame(render);
+      } else {
+        frame = 0;
+      }
+    };
+    const update = () => {
+      const end = endRef.current;
+      const endBottom = end
+        ? end.getBoundingClientRect().bottom + window.scrollY
+        : Number.POSITIVE_INFINITY;
+      layer.style.visibility =
+        !end || end.getBoundingClientRect().bottom > 0 ? "visible" : "hidden";
+      if (reducedMotion) return;
+      const zoomDistance = end
+        ? Math.max(endBottom - window.innerHeight, window.innerHeight)
+        : window.innerHeight;
+      target = Math.min(Math.max(window.scrollY / zoomDistance, 0), 1);
+      if (!frame) frame = window.requestAnimationFrame(render);
+    };
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [endRef]);
+
+  return (
+    <div
+      ref={layerRef}
+      data-shared-scroll-background={name}
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#082b46]"
+      style={{ visibility: "hidden" }}
+      aria-hidden="true"
+    >
+      <img
+        ref={imageRef}
+        src={src}
+        alt={alt}
+        className={`size-full object-cover object-center will-change-transform ${imageClassName}`}
+        style={{ transform: "translate3d(0, 0, 0) scale(1.04)" }}
+      />
     </div>
   );
 }
@@ -201,7 +297,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[80] transition-[background-color,box-shadow] duration-300 ${transparentAtTop ? "bg-[#082b46]/20" : "bg-[#082b46]/95 shadow-[0_8px_30px_rgba(0,0,0,.14)]"} backdrop-blur-xl`}
+        className={`fixed inset-x-0 top-0 z-[80] transition-[background-color,box-shadow] duration-300 ${transparentAtTop ? "bg-[#12395d]/20" : "bg-[#12395d]/95 shadow-[0_8px_30px_rgba(0,0,0,.14)]"} backdrop-blur-xl`}
       >
         <div
           className={`relative z-[2] mx-auto grid max-w-[1440px] grid-cols-[1fr_auto] items-center px-5 transition-[min-height] duration-300 sm:px-8 lg:grid-cols-[1fr_auto_1fr] lg:px-12 ${scrolled ? "min-h-[72px]" : "min-h-[104px]"}`}
@@ -225,7 +321,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
                       className={`flex min-h-11 items-center gap-1.5 text-[11px] font-bold uppercase tracking-[.13em] transition-colors ${servicesActive ? "text-white" : "text-white/75 hover:text-white"}`}
                     >
                       <span
-                        className={`relative py-1 after:absolute after:-bottom-1 after:left-1/2 after:h-0.5 after:-translate-x-1/2 after:bg-[#7ab2db] after:transition-[width] after:duration-200 ${servicesActive ? "after:w-[calc(100%-4px)]" : "after:w-0"}`}
+                        className={`relative py-1 after:absolute after:-bottom-1 after:left-1/2 after:h-0.5 after:w-[calc(100%-4px)] after:-translate-x-1/2 after:origin-center after:scale-x-0 after:bg-[#7ab2db] after:transition-transform after:duration-500 after:ease-out ${servicesActive ? "after:scale-x-100" : ""}`}
                       >
                         {label}
                       </span>
@@ -287,7 +383,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
                   className="inline-flex min-h-11 items-center text-[11px] font-bold uppercase tracking-[.13em] text-white/75 transition-colors hover:text-white aria-[current=page]:text-white"
                 >
                   <span
-                    className={`relative py-1 after:absolute after:-bottom-1 after:left-1/2 after:h-0.5 after:-translate-x-1/2 after:bg-[#7ab2db] after:transition-[width] after:duration-200 ${location === href ? "after:w-[calc(100%-4px)]" : "after:w-0"}`}
+                    className={`relative py-1 after:absolute after:-bottom-1 after:left-1/2 after:h-0.5 after:w-[calc(100%-4px)] after:-translate-x-1/2 after:origin-center after:scale-x-0 after:bg-[#7ab2db] after:transition-transform after:duration-500 after:ease-out ${location === href ? "after:scale-x-100" : ""}`}
                   >
                     {label}
                   </span>
@@ -298,7 +394,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
           <div className="flex items-center justify-self-end gap-2">
             <a
               href={languageUrl}
-              className={`grid h-11 min-w-11 place-items-center rounded-full border px-3 text-[10px] font-bold tracking-[.12em] transition-colors ${isDark ? "border-white/30 text-white hover:bg-white hover:text-[#12395d]" : "border-[#12395d]/20 text-[#12395d] hover:bg-[#12395d] hover:text-white"}`}
+              className={`hidden size-11 place-items-center rounded-none border text-[10px] font-bold tracking-[.12em] transition-colors duration-300 lg:grid ${isDark ? "border-white/35 text-white hover:border-[#7ab2db] hover:text-[#9bc9e7]" : "border-[#12395d]/30 text-[#12395d] hover:border-[#4291cd] hover:text-[#2e759f]"}`}
               aria-label={isEnglish ? "Cambiar a español" : "Change to English"}
             >
               {isEnglish ? "ES" : "EN"}
@@ -306,7 +402,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
             <button
               type="button"
               onClick={() => setOpen(value => !value)}
-              className={`grid size-11 place-items-center rounded-full border lg:hidden ${isDark ? "border-white/30 text-white" : "border-[#12395d]/20 text-[#12395d]"}`}
+              className={`grid size-11 place-items-center rounded-none border bg-transparent lg:hidden ${isDark ? "border-white/30 text-white" : "border-[#12395d]/20 text-[#12395d]"}`}
               aria-expanded={open}
               aria-controls="menu-movil"
               aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -321,7 +417,7 @@ export function Header({ dark = false }: { dark?: boolean }) {
           id="menu-movil"
           aria-hidden={!open}
           inert={!open}
-          className={`fixed inset-0 z-[70] flex h-dvh flex-col overflow-y-auto bg-[#082b46] px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-28 text-white transition-[opacity,transform,visibility] duration-500 ease-out motion-reduce:transform-none motion-reduce:transition-none lg:hidden ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-4 scale-[.985] opacity-0"}`}
+          className={`fixed inset-0 z-[70] flex h-dvh flex-col overflow-y-auto bg-[#12395d] px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-28 text-white transition-[opacity,transform,visibility] duration-500 ease-out motion-reduce:transform-none motion-reduce:transition-none lg:hidden ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-4 scale-[.985] opacity-0"}`}
         >
           <nav
             className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center text-center"
@@ -380,8 +476,20 @@ export function Header({ dark = false }: { dark?: boolean }) {
               )
             )}
           </nav>
-          <div className="mx-auto mb-20 w-full max-w-lg border-t border-white/15 pt-5 sm:mb-24">
-            <SocialLinks />
+          <div className="mx-auto mb-20 flex w-full max-w-lg flex-col items-center gap-5 sm:mb-24">
+            <a
+              href={languageUrl}
+              className="inline-flex min-h-11 items-center gap-3 border border-white/30 px-5 font-mono text-[10px] font-bold uppercase tracking-[.12em] text-white transition-colors hover:border-[#7ab2db] hover:text-[#9bc9e7]"
+              aria-label={isEnglish ? "Cambiar a español" : "Change to English"}
+            >
+              <span>{isEnglish ? "ES" : "EN"}</span>
+              <span className="text-white/65">
+                {isEnglish ? "Español" : "English"}
+              </span>
+            </a>
+            <div className="w-full border-t border-white/15 pt-5">
+              <SocialLinks />
+            </div>
           </div>
         </div>,
         document.body
@@ -409,11 +517,11 @@ export function PageIntro({
 }) {
   return (
     <div
-      className={`relative z-10 min-w-0 max-w-3xl ${centered ? "mx-auto text-center" : right ? "ml-auto text-right" : ""}`}
+      className={`hero-copy relative z-10 min-w-0 max-w-3xl ${centered ? "mx-auto text-center" : right ? "ml-auto text-right" : ""}`}
     >
       {eyebrow && (
         <p
-          className={`mb-4 flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-[0.2em] ${centered ? "justify-center" : right ? "justify-end" : ""} ${dark ? "text-[#9bc9e7]" : "text-[#0f7065]"}`}
+          className={`mb-4 flex items-center gap-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${centered ? "justify-center" : right ? "justify-end" : ""} ${dark ? "text-[#9bc9e7]" : "text-[#0f7065]"}`}
         >
           <span
             className={`h-px w-8 ${dark ? "bg-[#7ab2db]" : "bg-[#4291cd]"}`}
@@ -428,11 +536,11 @@ export function PageIntro({
         {italic && (
           <>
             {" "}
-          <span
-            className={`mt-2 block max-w-full break-words text-[clamp(1.85rem,3.6vw,3.5rem)] leading-[1] italic ${dark ? "text-[#7ab2db]" : "text-[#0f7065]"}`}
-          >
-            {italic}
-          </span>
+            <span
+              className={`mt-2 block max-w-full break-words text-[clamp(1.85rem,3.6vw,3.5rem)] leading-[1] italic ${dark ? "text-[#7ab2db]" : "text-[#0f7065]"}`}
+            >
+              {italic}
+            </span>
           </>
         )}
       </h1>
@@ -456,7 +564,7 @@ export function Eyebrow({
 }) {
   return (
     <p
-      className={`mb-5 flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-[0.2em] ${light ? "text-[#7ab2db]" : "text-[#0f7065]"}`}
+      className={`mb-5 flex items-center gap-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${light ? "text-[#7ab2db]" : "text-[#0f7065]"}`}
     >
       <span className={`h-px w-8 ${light ? "bg-[#7ab2db]" : "bg-[#4291cd]"}`} />
       {children}
@@ -489,76 +597,80 @@ function AnimatedFooterLogo() {
 
 export function Footer() {
   return (
-    <footer className="bg-[#082b46] text-white">
-      <div className="mx-auto max-w-[1440px] px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
-        <div className="grid justify-items-center gap-10 text-center md:grid-cols-2 lg:grid-cols-[.9fr_1.35fr_1.05fr_.8fr] lg:justify-items-start lg:text-left">
-          <div className="flex flex-col items-center lg:justify-self-center">
-            <AnimatedFooterLogo />
+    <footer className="relative z-30 isolate bg-[#12395d] text-white">
+      <div className="mx-auto max-w-[1440px] px-5 pb-10 pt-16 sm:px-8 sm:pt-20 lg:px-12">
+        <div className="flex justify-center pb-14 sm:pb-20">
+          <AnimatedFooterLogo />
+        </div>
+
+        <div className="grid gap-12 border-b border-white/15 pb-14 lg:grid-cols-[1.3fr_.75fr_.75fr] lg:gap-16">
+          <div className="text-center lg:text-left">
+            <h2 className="max-w-2xl font-display text-5xl leading-[.9] tracking-[-.04em] sm:text-6xl lg:text-7xl">
+              Tu salud merece verse con claridad
+            </h2>
+            <Link
+              href="/contacto"
+              className="group mx-auto mt-9 flex min-h-12 max-w-xl items-center justify-between border-b border-white/45 pb-3 font-mono text-xs uppercase tracking-[.12em] lg:mx-0"
+            >
+              ¡Habla con nosotros!
+              <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <div className="mt-10">
+              <div className="flex justify-center lg:justify-start">
+                <SocialLinks />
+              </div>
+            </div>
           </div>
 
-          <div>
-            <p className="text-[9px] font-extrabold uppercase tracking-[.16em] text-[#7ab2db]">
-              Servicios
-            </p>
-            <div className="mt-4 grid grid-cols-2 justify-items-center gap-x-6 gap-y-2 text-sm text-white/60 lg:justify-items-start">
+          <div className="text-center lg:text-left">
+            <p className="font-display text-3xl">Servicios</p>
+            <nav
+              className="mt-6 grid gap-3 font-mono text-xs uppercase tracking-[.1em] text-white/65"
+              aria-label="Servicios en el pie de página"
+            >
               {services.map(({ slug, title }) => (
                 <Link
                   key={slug}
                   href={`/servicios/${slug}`}
-                  className="w-fit transition-all duration-300 ease-out hover:translate-x-1 hover:text-white"
+                  className="transition-colors hover:text-white"
                 >
                   {title}
                 </Link>
               ))}
-            </div>
+            </nav>
           </div>
 
-          <div>
-            <p className="text-[9px] font-extrabold uppercase tracking-[.16em] text-[#7ab2db]">
-              Visítanos
-            </p>
-            <a
-              href="https://maps.app.goo.gl/EnPoYMCfZ6Cm4Fzs7"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 block max-w-[15rem] text-sm leading-relaxed text-white/60 transition-colors duration-300 hover:text-white"
+          <div className="text-center lg:text-left">
+            <p className="font-display text-3xl">Centro</p>
+            <nav
+              className="mt-6 grid gap-3 font-mono text-xs uppercase tracking-[.1em] text-white/65"
+              aria-label="Navegación del pie de página"
             >
-              Calle 10 de Mayo #980, Col. Coapinole, Puerto Vallarta, Jalisco.
-            </a>
-            <p className="mt-3 text-xs leading-relaxed text-white/40">
-              Lun-Vie · 8:00 a. m. - 8:00 p. m.
-              <br />
-              Sáb-Dom · 8:00 a. m. - 2:00 p. m.
-            </p>
-          </div>
-
-          <div>
-            <p className="text-[9px] font-extrabold uppercase tracking-[.16em] text-[#7ab2db]">
-              Contacto
-            </p>
-            <a
-              href={`tel:${APPOINTMENT_PHONE}`}
-              className="mt-4 block font-display text-2xl tracking-[-.04em] text-white transition-colors duration-300 hover:text-[#7ab2db]"
-            >
-              322 403 5071
-            </a>
-            <div className="mt-5">
-              <SocialLinks />
-            </div>
+              {navItems.map(([label, href]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="transition-colors hover:text-white"
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 text-center text-[9px] font-bold uppercase tracking-[.1em] text-white/35 lg:flex-row lg:text-left">
+
+        <div className="flex flex-col items-center justify-between gap-4 pt-6 text-center font-mono text-[9px] uppercase tracking-[.1em] text-white/40 sm:flex-row sm:text-left">
           <p>© 2026 Salud e Imagen del Puerto.</p>
-          <div className="flex flex-wrap gap-5">
+          <div className="flex flex-wrap justify-center gap-5">
             <Link
               href="/aviso-de-privacidad"
-              className="transition-colors duration-300 hover:text-white"
+              className="transition-colors hover:text-white"
             >
               Aviso de privacidad
             </Link>
             <Link
               href="/terminos-y-condiciones"
-              className="transition-colors duration-300 hover:text-white"
+              className="transition-colors hover:text-white"
             >
               Términos y condiciones
             </Link>
@@ -635,6 +747,45 @@ export function PageShell({
   children: React.ReactNode;
   darkHeader?: boolean;
 }) {
+  useLayoutEffect(() => {
+    const sections = Array.from(document.querySelectorAll("main > section"));
+    const revealItems = sections
+      .map(section =>
+        Array.from(section.children).find(
+          child =>
+            child.tagName !== "IMG" &&
+            window.getComputedStyle(child).position !== "absolute"
+        )
+      )
+      .filter((item): item is Element => Boolean(item));
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reducedMotion) return;
+    revealItems.forEach((item, index) => {
+      item.classList.add("section-reveal");
+      if (index === 0) item.classList.add("section-reveal--visible");
+    });
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("section-reveal--visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -10%", threshold: 0.08 }
+    );
+    const frame = requestAnimationFrame(() =>
+      revealItems.slice(1).forEach(item => observer.observe(item))
+    );
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen overflow-x-clip bg-[#fbfdfe]">
       <Header dark={darkHeader} />

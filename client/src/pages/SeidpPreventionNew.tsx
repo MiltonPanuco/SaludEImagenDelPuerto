@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import {
   Activity,
   ArrowRight,
@@ -11,7 +12,12 @@ import {
   Utensils,
 } from "lucide-react";
 import { Link } from "wouter";
-import { Eyebrow, PageIntro, PageShell } from "@/components/SeidpLayout";
+import {
+  Eyebrow,
+  PageIntro,
+  PageShell,
+  SharedScrollBackground,
+} from "@/components/SeidpLayout";
 
 const needs = [
   [ShieldCheck, "Revisión general", "#orientacion"],
@@ -41,15 +47,19 @@ const orientationCards = [
 ] as const;
 
 export default function SeidpPreventionNew() {
+  const clarityRef = useRef<HTMLElement>(null);
+
   return (
     <PageShell darkHeader>
-      <main>
-        <section className="relative isolate flex min-h-[68svh] items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
-          <img
-            src="/media/seidp-prevention-family.webp"
-            alt="Familia recibiendo orientación preventiva en un entorno clínico"
-            className="absolute inset-0 size-full object-cover object-center opacity-80"
-          />
+      <main className="relative isolate">
+        <SharedScrollBackground
+          name="prevencion"
+          src="/media/seidp-prevention-family.webp"
+          alt="Familia recibiendo orientación preventiva en un entorno clínico"
+          endRef={clarityRef}
+          imageClassName="opacity-80"
+        />
+        <section className="relative flex min-h-[68svh] items-end overflow-hidden pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,43,70,.72),rgba(8,43,70,.48)_52%,rgba(8,43,70,.14))]" />
           <div className="relative mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12">
             <PageIntro
@@ -67,7 +77,7 @@ export default function SeidpPreventionNew() {
           aria-labelledby="necesidades"
         >
           <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
-            <Eyebrow>Un punto de partida</Eyebrow>
+            <Eyebrow>Un punto de vista</Eyebrow>
             <h2
               id="necesidades"
               className="font-display text-4xl font-semibold tracking-[-.05em] text-[#12395d] sm:text-5xl"
@@ -90,60 +100,6 @@ export default function SeidpPreventionNew() {
                   <ArrowRight className="ml-auto size-4 text-[#4291cd] transition-transform group-hover:translate-x-1" />
                 </a>
               ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#f4f8fa] py-16 sm:py-24">
-          <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
-            <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-              <div>
-                <Eyebrow>Beneficios de orientarte</Eyebrow>
-                <h2 className="font-display text-4xl font-semibold leading-[.96] tracking-[-.05em] text-[#12395d] sm:text-5xl">
-                  Información para cuidar lo que sigue.
-                </h2>
-              </div>
-              <p className="max-w-xl text-sm leading-relaxed text-[#597286]">
-                Los estudios preventivos pueden aportar información útil para
-                conversar con un profesional y decidir si necesitas seguimiento.
-              </p>
-            </div>
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
-              {[
-                [
-                  Activity,
-                  "Conoce mejor tu estado de salud",
-                  "Reúne información que puede ayudar a comprender tu situación actual.",
-                ],
-                [
-                  HeartPulse,
-                  "Identifica la necesidad de seguimiento",
-                  "Reconoce cambios o resultados que conviene revisar con un profesional.",
-                ],
-                [
-                  MessageCircle,
-                  "Recibe orientación clara",
-                  "Confirma qué sigue, cómo prepararte y cuándo consultar tus resultados.",
-                ],
-              ].map(([Icon, title, text]) => {
-                const ValueIcon = Icon as typeof Activity;
-                return (
-                  <article
-                    key={title as string}
-                    className="rounded-[20px] border border-[#12395d]/10 bg-white p-6 sm:p-8"
-                  >
-                    <span className="grid size-11 place-items-center rounded-full bg-[#e8f5f5] text-[#0f7065]">
-                      <ValueIcon className="size-5" />
-                    </span>
-                    <h3 className="mt-7 font-display text-2xl font-semibold tracking-[-.04em] text-[#12395d]">
-                      {title as string}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-[#597286]">
-                      {text as string}
-                    </p>
-                  </article>
-                );
-              })}
             </div>
           </div>
         </section>
@@ -209,57 +165,12 @@ export default function SeidpPreventionNew() {
           </div>
         </section>
 
-        <section className="bg-[#e8f5f5] py-16 sm:py-24">
-          <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
-            <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
-              <div>
-                <Eyebrow>Tu visita</Eyebrow>
-                <h2 className="font-display text-4xl font-semibold leading-[.96] tracking-[-.05em] text-[#12395d] sm:text-5xl">
-                  Tres pasos, sin complicaciones.
-                </h2>
-              </div>
-              <ol className="border-t border-[#12395d]/15">
-                {[
-                  [
-                    "01",
-                    "Elige una opción",
-                    "Usa las categorías como punto de partida.",
-                  ],
-                  [
-                    "02",
-                    "Confirma preparación y disponibilidad",
-                    "Nuestro equipo revisa contigo los requisitos antes de acudir.",
-                  ],
-                  [
-                    "03",
-                    "Recibe atención y orientación",
-                    "Al finalizar, confirma la entrega y los siguientes pasos.",
-                  ],
-                ].map(([number, title, text]) => (
-                  <li
-                    key={number}
-                    className="grid grid-cols-[3rem_1fr] gap-4 border-b border-[#12395d]/15 py-6 sm:grid-cols-[4rem_1fr]"
-                  >
-                    <span className="font-display text-2xl font-semibold text-[#0f7065]">
-                      {number}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-2xl font-semibold tracking-[-.04em] text-[#12395d]">
-                        {title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-[#597286]">
-                        {text}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#082b46] py-16 text-white sm:py-20">
-          <div className="mx-auto grid max-w-[1180px] gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_.9fr] lg:items-center lg:px-12">
+        <section
+          ref={clarityRef}
+          className="relative overflow-hidden py-16 text-white sm:py-20"
+        >
+          <div className="absolute inset-0 bg-[#082b46]/84" />
+          <div className="relative mx-auto grid max-w-[1180px] gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_.9fr] lg:items-center lg:px-12">
             <div>
               <Eyebrow light>Prevención con información clara</Eyebrow>
               <h2 className="font-display text-4xl font-semibold leading-[.98] tracking-[-.05em] sm:text-5xl">
@@ -289,24 +200,60 @@ export default function SeidpPreventionNew() {
           </div>
         </section>
 
-        <section className="bg-[#fbfdfe] py-16 sm:py-20">
-          <div className="mx-auto max-w-[980px] px-5 sm:px-8 lg:px-12">
-            <div className="max-w-2xl border-l-2 border-[#4291cd] pl-6">
-              <Eyebrow>Antes de elegir una opción preventiva</Eyebrow>
-              <p className="mt-4 text-base leading-relaxed text-[#597286]">
-                La preparación, los requisitos y los estudios adecuados se
-                confirman de manera individual con nuestro equipo.
+        <section className="bg-[#f4f8fa] py-16 sm:py-24">
+          <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
+            <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+              <div>
+                <Eyebrow>Beneficios de orientarte</Eyebrow>
+                <h2 className="font-display text-4xl font-semibold leading-[.96] tracking-[-.05em] text-[#12395d] sm:text-5xl">
+                  Información para cuidar lo que sigue.
+                </h2>
+              </div>
+              <p className="max-w-xl text-sm leading-relaxed text-[#597286]">
+                Los estudios preventivos pueden aportar información útil para
+                conversar con un profesional y decidir si necesitas seguimiento.
               </p>
-              <Link
-                href="/contacto#preguntas-frecuentes"
-                className="mt-5 inline-flex min-h-11 items-center gap-2 font-bold text-[#0f7065] hover:text-[#12395d]"
-              >
-                Consulta las preguntas frecuentes
-                <ArrowRight className="size-4" />
-              </Link>
+            </div>
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {[
+                [
+                  Activity,
+                  "Conoce mejor tu estado de salud",
+                  "Reúne información que puede ayudar a comprender tu situación actual.",
+                ],
+                [
+                  HeartPulse,
+                  "Identifica la necesidad de seguimiento",
+                  "Reconoce cambios o resultados que conviene revisar con un profesional.",
+                ],
+                [
+                  MessageCircle,
+                  "Recibe orientación clara",
+                  "Confirma qué sigue, cómo prepararte y cuándo consultar tus resultados.",
+                ],
+              ].map(([Icon, title, text]) => {
+                const ValueIcon = Icon as typeof Activity;
+                return (
+                  <article
+                    key={title as string}
+                    className="rounded-[20px] border border-[#12395d]/10 bg-white p-6 sm:p-8"
+                  >
+                    <span className="grid size-11 place-items-center rounded-full bg-[#e8f5f5] text-[#0f7065]">
+                      <ValueIcon className="size-5" />
+                    </span>
+                    <h3 className="mt-7 font-display text-2xl font-semibold tracking-[-.04em] text-[#12395d]">
+                      {title as string}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#597286]">
+                      {text as string}
+                    </p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
+
       </main>
     </PageShell>
   );

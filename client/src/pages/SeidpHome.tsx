@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import {
   ArrowRight,
   CalendarCheck,
   ClipboardCheck,
   HeartPulse,
-  MessageCircle,
   Microscope,
   ShieldCheck,
 } from "lucide-react";
 import { Link } from "wouter";
-import { Eyebrow, PageIntro, PageShell } from "@/components/SeidpLayout";
+import { AnimatedStat } from "@/components/AnimatedStat";
+import {
+  Eyebrow,
+  PageIntro,
+  PageShell,
+  SharedScrollBackground,
+} from "@/components/SeidpLayout";
 
 const steps = [
   [
@@ -63,128 +68,60 @@ const services = [
 ] as const;
 
 export default function SeidpHome() {
-  const [compactHero, setCompactHero] = useState(false);
-
-  useEffect(() => {
-    let frame = 0;
-    const updateHero = () => {
-      frame = 0;
-      setCompactHero((current) => {
-        if (window.scrollY <= 4) return false;
-        if (window.scrollY >= 64) return true;
-        return current;
-      });
-    };
-    const handleScroll = () => {
-      if (!frame) frame = window.requestAnimationFrame(updateHero);
-    };
-
-    updateHero();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
+  const statsRef = useRef<HTMLElement>(null);
 
   return (
     <PageShell darkHeader>
-      <main className="flex flex-col">
+      <main className="relative isolate flex flex-col">
+        <SharedScrollBackground
+          name="home"
+          src="/media/seidp-hero-main.webp"
+          alt="Profesional de la salud realizando un estudio de ultrasonido"
+          endRef={statsRef}
+        />
         <section
           data-home-hero
-          className={`order-0 relative flex items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white transition-[min-height] duration-700 ease-out motion-reduce:transition-none sm:pb-16 ${compactHero ? "min-h-[72svh]" : "min-h-screen min-h-[100svh]"}`}
+          className="order-0 relative flex min-h-screen min-h-[100svh] items-end overflow-hidden pb-12 pt-28 text-white sm:pb-16"
         >
-          <img
-            src="/media/seidp-hero-main.webp"
-            alt="Profesional de la salud realizando un estudio de ultrasonido"
-            className="absolute inset-0 h-full w-full object-cover object-center opacity-65"
-          />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,43,70,.78)_0%,rgba(8,43,70,.62)_36%,rgba(8,43,70,.14)_73%,rgba(8,43,70,.28)_100%)]" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#082b46]/55 via-transparent to-[#082b46]/15" />
 
-          <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
-            <PageIntro
-              eyebrow="Diagnóstico con atención humana"
-              title="Tu salud merece"
-              italic="verse con claridad."
-              description="Estudios de imagen, laboratorio y prevención en Puerto Vallarta, con información clara desde tu primera consulta."
-              dark
-            />
-          </div>
-        </section>
-
-        <section className="order-1 bg-[#fbfdfe] py-24 sm:py-32">
-          <div className="mx-auto grid max-w-[1280px] gap-12 px-5 sm:px-8 lg:grid-cols-[.72fr_1.28fr] lg:items-center lg:gap-20 lg:px-12">
+          <div className="relative z-10 mx-auto grid w-full max-w-[1440px] items-end gap-10 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_260px] lg:px-12">
             <div>
-              <Eyebrow>Atención que acompaña</Eyebrow>
-              <h2 className="font-display text-4xl font-semibold leading-[.96] tracking-[-.05em] text-[#12395d] sm:text-6xl">
-                Tecnología precisa, trato cercano.
-              </h2>
-              <p className="mt-7 max-w-md text-base leading-relaxed text-[#597286]">
-                Cada estudio comienza escuchándote. Nuestro equipo te orienta
-                con claridad para que sepas qué esperar antes, durante y después
-                de tu visita.
-              </p>
-              <Link
-                href="/nosotros"
-                className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#0f7065] hover:text-[#12395d]"
-              >
-                Conoce nuestro enfoque
-                <ArrowRight className="size-4" />
-              </Link>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-[1.15fr_.85fr]">
-              <figure className="overflow-hidden bg-[#dceef4] sm:translate-y-8">
-                <img
-                  src="/media/seidp-hero-clinic.webp"
-                  alt="Profesional de la salud realizando un estudio de ultrasonido"
-                  className="aspect-[4/5] h-full w-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
-              <figure className="overflow-hidden bg-[#dceef4]">
-                <img
-                  src="/media/seidp-lab-detail.webp"
-                  alt="Profesional trabajando con equipo de laboratorio"
-                  className="aspect-[4/5] h-full w-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="order-2 w-full bg-[#12395d] text-white"
-          aria-label="Nuestro enfoque de atención"
-        >
-          <div className="mx-auto grid max-w-[1280px] gap-4 px-5 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12 lg:py-16">
-            {[
-              [HeartPulse, "Atención cercana"],
-              [MessageCircle, "Información clara"],
-              [CalendarCheck, "Orientación antes de tu cita"],
-              [ShieldCheck, "Servicios en un mismo lugar"],
-            ].map(([Icon, label]) => {
-              const BenefitIcon = Icon as typeof HeartPulse;
-              return (
-                <div
-                  key={label as string}
-                  className="flex min-h-24 items-center gap-4 rounded-[18px] border border-white/10 bg-white/5 p-5"
+              <PageIntro
+                eyebrow="Diagnóstico con atención humana"
+                title="Tu salud merece"
+                italic="verse con claridad."
+                description="Estudios de imagen, laboratorio y prevención en Puerto Vallarta. Información precisa para que tomes el siguiente paso con calma."
+                dark
+              />
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/contacto"
+                  className="inline-flex min-h-11 items-center gap-3 rounded-full bg-[#378ca0] px-6 text-[10px] font-bold uppercase tracking-[.13em] text-white transition-colors hover:bg-[#4291cd]"
                 >
-                  <BenefitIcon className="size-6 shrink-0 text-[#7ab2db]" />
-                  <p className="font-display text-lg font-semibold leading-tight">
-                    {label as string}
-                  </p>
-                </div>
-              );
-            })}
+                  Agendar una consulta <ArrowRight className="size-4" />
+                </Link>
+                <Link
+                  href="/servicios"
+                  className="inline-flex min-h-11 items-center gap-3 rounded-full border border-white/35 px-6 text-[10px] font-bold uppercase tracking-[.13em] text-white transition-colors hover:bg-white hover:text-[#12395d]"
+                >
+                  Explorar servicios <ArrowRight className="size-4" />
+                </Link>
+              </div>
+            </div>
+            <aside className="hidden border-l border-white/25 pl-6 lg:block">
+              <p className="text-[9px] font-bold uppercase tracking-[.18em] text-[#bfe0f1]">
+                Aquí empieza
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-white/75">
+                Una conversación clara también forma parte de tu cuidado.
+              </p>
+            </aside>
           </div>
         </section>
 
-        <section className="order-4 bg-[#f4f8fa] py-24 sm:py-32">
+        <section className="order-3 bg-[#f4f8fa] py-24 sm:py-32">
           <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-12">
             <div className="grid items-end gap-8 lg:grid-cols-[1fr_.65fr]">
               <div>
@@ -247,7 +184,78 @@ export default function SeidpHome() {
           </div>
         </section>
 
-        <section id="conoce" className="order-3 bg-[#fbfdfe] py-24 sm:py-32">
+        <section className="order-1 bg-[#fbfdfe] py-24 sm:py-32">
+          <div className="mx-auto grid max-w-[1280px] gap-12 px-5 sm:px-8 lg:grid-cols-[.72fr_1.28fr] lg:items-center lg:gap-20 lg:px-12">
+            <div>
+              <Eyebrow>Atención que acompaña</Eyebrow>
+              <h2 className="font-display text-4xl font-semibold leading-[.96] tracking-[-.05em] text-[#12395d] sm:text-6xl">
+                Tecnología precisa, trato cercano.
+              </h2>
+              <p className="mt-7 max-w-md text-base leading-relaxed text-[#597286]">
+                Cada estudio comienza escuchándote. Nuestro equipo te orienta
+                con claridad para que sepas qué esperar antes, durante y después
+                de tu visita.
+              </p>
+              <Link
+                href="/nosotros"
+                className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#0f7065] hover:text-[#12395d]"
+              >
+                Conoce nuestro enfoque
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-[1.15fr_.85fr]">
+              <figure className="overflow-hidden bg-[#dceef4] sm:translate-y-8">
+                <img
+                  src="/media/seidp-hero-clinic.webp"
+                  alt="Profesional de la salud realizando un estudio de ultrasonido"
+                  className="aspect-[4/5] h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+              <figure className="overflow-hidden bg-[#dceef4]">
+                <img
+                  src="/media/seidp-lab-detail.webp"
+                  alt="Profesional trabajando con equipo de laboratorio"
+                  className="aspect-[4/5] h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section
+          ref={statsRef}
+          className="order-2 relative w-full overflow-hidden text-white"
+          aria-label="Salud e Imagen del Puerto en números"
+        >
+          <div className="absolute inset-0 bg-[#12395d]/82" />
+          <div className="relative z-10 mx-auto grid max-w-[1440px] grid-cols-2 gap-x-6 gap-y-12 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-4 lg:gap-10 lg:px-12 lg:py-28">
+            <AnimatedStat value={1000} suffix="+" label="Pacientes atendidos" />
+            <AnimatedStat value={3000} suffix="+" label="Estudios de imagen" />
+            <AnimatedStat
+              value={5000}
+              suffix="+"
+              label="Análisis de laboratorio"
+            />
+            <AnimatedStat
+              value={600}
+              suffix="+"
+              label="Evaluaciones preventivas"
+            />
+          </div>
+        </section>
+
+
+
+        <section
+          id="conoce"
+          className="order-4 bg-[linear-gradient(180deg,#f4f8fa_0%,#fbfdfe_42%,#ffffff_100%)] py-24 sm:py-32"
+        >
           <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-12">
             <div className="grid gap-14 lg:grid-cols-[.82fr_1.18fr] lg:gap-24">
               <div>

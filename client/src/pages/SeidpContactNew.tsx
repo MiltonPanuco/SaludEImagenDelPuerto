@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { MapboxTiltMap } from "@/components/MapboxTiltMap";
 import {
   APPOINTMENT_PHONE,
   Eyebrow,
@@ -27,14 +28,6 @@ const questions = [
   [
     "¿Cuándo recibiré mis resultados?",
     "El tiempo de entrega depende del estudio. Pregunta por el plazo estimado al agendar o durante tu atención.",
-  ],
-  [
-    "¿Qué información de salud debo compartir?",
-    "Avísanos si estás embarazada o podrías estarlo, si tienes alergias, implantes, marcapasos o tomas medicamentos relevantes.",
-  ],
-  [
-    "¿Cómo confirmo la preparación?",
-    "La preparación cambia según el estudio. Escríbenos o llama antes de acudir y te confirmaremos las indicaciones correspondientes.",
   ],
   [
     "¿Atienden fines de semana?",
@@ -80,7 +73,7 @@ export default function SeidpContactNew() {
         </section>
         <section
           id="hablar"
-          className="scroll-mt-24 bg-[#fbfdfe] py-16 sm:py-24"
+          className="scroll-mt-24 bg-[linear-gradient(180deg,#fbfdfe_0%,#f6f9fa_62%,#edf4f6_100%)] py-16 sm:py-24"
         >
           <div className="mx-auto grid max-w-[1180px] gap-12 px-5 sm:px-8 lg:grid-cols-[.7fr_1.3fr] lg:gap-24 lg:px-12">
             <div>
@@ -107,7 +100,7 @@ export default function SeidpContactNew() {
                   <span className="block text-[9px] font-bold uppercase tracking-[.15em] text-[#0f7065]">
                     Mensajes y citas
                   </span>
-                  <strong className="mt-1 block font-display text-xl sm:text-2xl">
+                  <strong className="mt-1 block font-display text-xl font-medium sm:text-2xl">
                     WhatsApp
                   </strong>
                 </span>
@@ -127,7 +120,7 @@ export default function SeidpContactNew() {
                   <span className="block text-[9px] font-bold uppercase tracking-[.15em] text-[#0f7065]">
                     Agenda por teléfono
                   </span>
-                  <strong className="mt-1 block font-display text-xl sm:text-2xl">
+                  <strong className="mt-1 block font-display text-xl font-medium sm:text-2xl">
                     Línea de citas
                   </strong>
                 </span>
@@ -147,7 +140,7 @@ export default function SeidpContactNew() {
                   <span className="block text-[9px] font-bold uppercase tracking-[.15em] text-[#0f7065]">
                     Confirma atención
                   </span>
-                  <strong className="mt-1 block font-display text-xl sm:text-2xl">
+                  <strong className="mt-1 block font-display text-xl font-medium sm:text-2xl">
                     Urgencias
                   </strong>
                 </span>
@@ -164,139 +157,137 @@ export default function SeidpContactNew() {
         </section>
         <section
           id="encuentranos"
-          className="scroll-mt-24 bg-[#082b46] py-16 text-white sm:py-24"
+          className="scroll-mt-24 bg-[#edf4f6] py-16 text-[#12395d] sm:py-24"
         >
           <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-12">
-            <div className="grid gap-6 lg:grid-cols-[1.35fr_.65fr] lg:items-stretch lg:gap-0">
-            <div className="order-2 min-h-[360px] overflow-hidden rounded-[24px] bg-[#dceef4] lg:order-1 lg:min-h-[460px] lg:rounded-r-none">
-              <iframe
-                title="Ubicación de Salud e Imagen del Puerto"
-                src="https://www.google.com/maps?q=Calle%2010%20de%20Mayo%20980%2C%20Coapinole%2C%20Puerto%20Vallarta%2C%20Jalisco&z=16&output=embed"
-                className="h-full min-h-[360px] w-full border-0 lg:min-h-[460px]"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-            <div className="order-1 flex flex-col justify-between rounded-[24px] bg-[#12395d] p-7 sm:p-10 lg:order-2 lg:rounded-l-none">
+            <div className="mb-10 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
-                <Eyebrow light>Encuéntranos</Eyebrow>
-                <h2 className="font-display text-4xl font-semibold leading-[1] tracking-[-.05em] sm:text-5xl">
-                  Visítanos en Puerto Vallarta.
+                <Eyebrow>Aquí nos encontramos</Eyebrow>
+                <h2 className="font-display text-5xl font-semibold leading-[.95] tracking-[-.055em] sm:text-6xl">
+                  Ven a conocernos.
                 </h2>
-                <p className="mt-5 text-sm leading-relaxed text-white/70">
-                  Encuentra nuestra clínica, consulta los horarios y abre la
-                  ruta desde tu teléfono.
-                </p>
-                <a
-                  href="https://maps.app.goo.gl/EnPoYMCfZ6Cm4Fzs7"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-7 flex items-start gap-3 text-sm leading-relaxed text-white/70 transition-colors hover:text-white"
-                >
-                  <MapPin className="mt-0.5 size-5 shrink-0 text-[#7ab2db]" />
-                  <span>
+              </div>
+              <p className="flex items-center gap-2 text-sm text-[#597286] lg:pb-2">
+                <MapPin className="size-4 text-[#0f7065]" />
+                Puerto Vallarta, Jalisco
+              </p>
+            </div>
+          </div>
+          <div className="px-5 sm:px-8 lg:pl-[max(3rem,calc((100vw-1280px)/2+3rem))] lg:pr-0">
+            <div className="grid overflow-hidden rounded-[26px] shadow-[0_18px_50px_rgba(18,57,93,.1)] lg:grid-cols-[minmax(360px,500px)_1fr] lg:rounded-r-none">
+              <div className="flex flex-col justify-between bg-[#e7f0f3] p-7 sm:p-10 lg:min-h-[620px] lg:p-12">
+                <div>
+                  <Eyebrow>Nuestra dirección</Eyebrow>
+                  <h3 className="mt-6 max-w-sm font-display text-4xl font-semibold leading-[.92] tracking-[-.05em] sm:text-5xl">
                     Calle 10 de Mayo #980
-                    <br />
+                  </h3>
+                  <p className="mt-5 text-sm leading-relaxed text-[#597286]">
                     Entre Guatemala y Brasil
                     <br />
-                    Colonia Coapinole
-                    <br />
-                    Puerto Vallarta, Jalisco
-                  </span>
-                </a>
-              </div>
-              <dl className="mt-10 border-t border-white/15 text-sm">
-                <div className="grid grid-cols-[1fr_auto] gap-4 border-b border-white/15 py-5">
-                  <dt className="text-white/55">Lunes a viernes</dt>
-                  <dd className="font-semibold">8:00 a. m. - 8:00 p. m.</dd>
+                    Colonia Coapinole, Puerto Vallarta, Jalisco.
+                  </p>
                 </div>
-                <div className="grid grid-cols-[1fr_auto] gap-4 border-b border-white/15 py-5">
-                  <dt className="text-white/55">Sábado y domingo</dt>
-                  <dd className="font-semibold">8:00 a. m. - 2:00 p. m.</dd>
+                <dl className="mt-8 border-y border-[#12395d]/15 py-5 text-sm">
+                  <div>
+                    <dt className="text-[#597286]">Lunes a viernes</dt>
+                    <dd className="mt-1 font-semibold">
+                      8:00 a. m. - 8:00 p. m.
+                    </dd>
+                  </div>
+                  <div className="mt-5">
+                    <dt className="text-[#597286]">Sábado y domingo</dt>
+                    <dd className="mt-1 font-semibold">
+                      8:00 a. m. - 2:00 p. m.
+                    </dd>
+                  </div>
+                </dl>
+                <div className="mt-7 grid gap-3">
+                  <a
+                    href="https://maps.app.goo.gl/EnPoYMCfZ6Cm4Fzs7"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#cfe6f0] px-4 text-[10px] font-bold uppercase tracking-[.12em] transition-colors hover:bg-[#b9dbe9]"
+                  >
+                    Cómo llegar <ArrowUpRight className="size-4" />
+                  </a>
+                  <div className="grid grid-cols-2 gap-3">
+                    <a
+                      href={`tel:${APPOINTMENT_PHONE}`}
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#12395d]/20 px-3 text-xs font-bold transition-colors hover:bg-white"
+                    >
+                      Llamar <Phone className="size-4" />
+                    </a>
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#12395d]/20 px-3 text-xs font-bold transition-colors hover:bg-white"
+                    >
+                      Consultar por WhatsApp <WhatsAppIcon className="size-4" />
+                    </a>
+                  </div>
                 </div>
-              </dl>
-              <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                <a
-                  href="https://maps.app.goo.gl/EnPoYMCfZ6Cm4Fzs7"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-[#12395d] transition-colors hover:bg-[#dceef4]"
-                >
-                  Cómo llegar <ArrowUpRight className="size-4" />
-                </a>
-                <a
-                  href={`tel:${APPOINTMENT_PHONE}`}
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/25 px-4 text-xs font-bold text-white transition-colors hover:bg-white/10"
-                >
-                  Llamar <Phone className="size-4" />
-                </a>
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/25 px-4 text-xs font-bold text-white transition-colors hover:bg-white/10"
-                >
-                  Consultar por WhatsApp <WhatsAppIcon className="size-4" />
-                </a>
               </div>
-            </div>
+              <div className="min-h-[420px] bg-[#dceef4] lg:min-h-[620px]">
+                <MapboxTiltMap />
+              </div>
             </div>
           </div>
         </section>
         <section
           id="preguntas-frecuentes"
-          className="scroll-mt-24 bg-[#f4f8fa] py-16 sm:py-24"
+          className="scroll-mt-24 bg-[linear-gradient(180deg,#edf4f6_0%,#f7fafb_44%,#ffffff_100%)] py-16 sm:py-24"
         >
-          <div className="mx-auto max-w-[980px] px-5 sm:px-8 lg:px-12">
-            <div className="mx-auto max-w-2xl text-center">
-              <div className="flex justify-center">
-                <Eyebrow>Preguntas frecuentes</Eyebrow>
-              </div>
+          <div className="mx-auto grid max-w-[1280px] gap-12 px-5 sm:px-8 lg:grid-cols-[.68fr_1.32fr] lg:gap-24 lg:px-12">
+            <div>
+              <Eyebrow>Antes de tu visita</Eyebrow>
               <h2 className="font-display text-4xl font-semibold leading-[1] tracking-[-.05em] text-[#12395d] sm:text-5xl">
-                Respuestas claras antes de agendar o acudir al centro.
+                Llega con más claridad.
               </h2>
-              <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-[#597286]">
-                Lo más consultado antes de agendar o acudir al centro.
+              <p className="mt-6 max-w-sm text-sm leading-relaxed text-[#597286]">
+                Resolvemos las preguntas más comunes antes de tu cita.
               </p>
             </div>
-            <Accordion
-              type="single"
-              collapsible
-              className="mt-12 border-t border-[#12395d]/15"
-            >
-              {questions.map(([question, answer], index) => (
-                <AccordionItem
-                  key={question}
-                  value={question}
-                  className="border-[#12395d]/15"
-                >
-                  <AccordionTrigger className="gap-4 py-6 text-left font-display text-lg font-semibold tracking-[-.025em] text-[#12395d] hover:no-underline sm:text-xl [&>svg]:text-[#0f7065]">
-                    <span className="flex items-baseline gap-4">
-                      <span className="font-sans text-[10px] text-[#0f7065]">
-                        0{index + 1}
-                      </span>
-                      {question}
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="max-w-2xl pb-6 pl-7 text-sm leading-relaxed text-[#597286]">
-                    {answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <div className="mt-10 flex flex-col items-center justify-between gap-5 border-t border-[#12395d]/15 pt-7 text-center sm:flex-row sm:text-left">
-              <p className="text-sm text-[#597286]">
-                ¿Tu pregunta no aparece aquí?
-              </p>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="group inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.13em] text-[#0f7065]"
+            <div>
+              <Accordion
+                type="single"
+                collapsible
+                className="border-t border-[#12395d]/15"
               >
-                Preguntar por WhatsApp{" "}
-                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </a>
+                {questions.map(([question, answer], index) => (
+                  <AccordionItem
+                    key={question}
+                    value={question}
+                    className="border-[#12395d]/15"
+                  >
+                    <AccordionTrigger className="gap-4 py-6 text-left font-display text-lg font-semibold tracking-[-.025em] text-[#12395d] hover:no-underline sm:text-xl [&>svg]:text-[#0f7065]">
+                      <span className="flex items-baseline gap-4">
+                        <span className="font-sans text-[10px] text-[#0f7065]">
+                          0{index + 1}
+                        </span>
+                        {question}
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="max-w-2xl pb-6 pl-7 text-sm leading-relaxed text-[#597286]">
+                      {answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+              <div className="mt-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                <p className="text-sm text-[#597286]">
+                  ¿Tu pregunta no aparece aquí?
+                </p>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group inline-flex min-h-11 items-center gap-3 text-[10px] font-bold uppercase tracking-[.13em] text-[#0f7065]"
+                >
+                  Preguntar por WhatsApp{" "}
+                  <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </a>
+              </div>
             </div>
           </div>
         </section>
