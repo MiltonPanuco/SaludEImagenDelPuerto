@@ -98,7 +98,7 @@ export default function SeidpServicesHub() {
   );
 
   return (
-    <PageShell darkHeader>
+    <PageShell darkHeader animateFirstSection>
       <main>
         <section className="relative isolate flex min-h-[68svh] items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
           <img

@@ -8,21 +8,21 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  error: Error | null;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+  static getDerivedStateFromError(): State {
+    return { hasError: true };
   }
 
   render() {
     if (this.state.hasError) {
+      const english = document.documentElement.lang === "en";
       return (
         <div className="flex items-center justify-center min-h-screen p-8 bg-background">
           <div className="flex flex-col items-center w-full max-w-2xl p-8">
@@ -31,13 +31,16 @@ class ErrorBoundary extends Component<Props, State> {
               className="text-destructive mb-6 flex-shrink-0"
             />
 
-            <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
-
-            <div className="p-4 w-full rounded bg-muted overflow-auto mb-6">
-              <pre className="text-sm text-muted-foreground whitespace-break-spaces">
-                {this.state.error?.stack}
-              </pre>
-            </div>
+            <h2 className="mb-3 text-center text-xl">
+              {english
+                ? "We couldn't display this page."
+                : "No pudimos mostrar esta página."}
+            </h2>
+            <p className="mb-6 text-center text-sm text-muted-foreground">
+              {english
+                ? "Reload to try again."
+                : "Recarga para intentarlo nuevamente."}
+            </p>
 
             <button
               onClick={() => window.location.reload()}
@@ -48,7 +51,7 @@ class ErrorBoundary extends Component<Props, State> {
               )}
             >
               <RotateCcw size={16} />
-              Reload Page
+              {english ? "Reload page" : "Recargar página"}
             </button>
           </div>
         </div>

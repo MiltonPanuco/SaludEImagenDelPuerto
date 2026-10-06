@@ -1,13 +1,12 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="is-loading">
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
     content="Salud e Imagen del Puerto: diagnóstico por imagen, laboratorio, prevención y atención médica en Coapinole, Puerto Vallarta." />
   <meta name="theme-color" content="#082B46" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -17,10 +16,58 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
+  <style>
+    .app-loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: #fff;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 450ms cubic-bezier(.22, 1, .36, 1), visibility 450ms;
+    }
+
+    html.is-loading,
+    html.is-loading body,
+    html.is-route-loading,
+    html.is-route-loading body {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    .app-loading-screen.app-loading-screen--leaving {
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .app-loading-screen__content {
+      display: grid;
+      justify-items: center;
+    }
+
+    .app-loading-spinner {
+      width: clamp(7.5rem, 18vw, 10rem);
+      height: auto;
+      filter: drop-shadow(0 18px 40px rgb(8 43 70 / 35%));
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .app-loading-screen { transition-duration: 1ms; }
+    }
+  </style>
   <title>Salud e Imagen del Puerto | Diagnóstico y prevención</title>
 </head>
 
 <body>
+  <div id="app-loading-screen" class="app-loading-screen" role="status" aria-label="Cargando Salud e Imagen del Puerto">
+    <div class="app-loading-screen__content">
+      <img class="app-loading-spinner" data-spinner="4" src="/spinner-loading.svg" alt="" />
+    </div>
+  </div>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>

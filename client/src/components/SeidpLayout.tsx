@@ -3,14 +3,22 @@ import { createPortal } from "react-dom";
 import { ArrowRight, ChevronDown, MapPin, Menu, Phone, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { services } from "@/serviceData";
+import { setSiteLanguage, type SiteLanguage, useSiteLanguage } from "@/i18n";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export const WHATSAPP_URL =
-  "https://wa.me/523224704622?text=Hola%2C%20Salud%20e%20Imagen%20del%20Puerto.%20Quiero%20consultar%20por%20un%20estudio.";
+const WHATSAPP_MESSAGES: Record<SiteLanguage, string> = {
+  es: "Hola, Salud e Imagen del Puerto. Quiero consultar por un estudio.",
+  en: "Hello, Salud e Imagen del Puerto. I would like to ask about a study.",
+};
+export const getWhatsAppUrl = (language: SiteLanguage) =>
+  `https://wa.me/523224704622?text=${encodeURIComponent(WHATSAPP_MESSAGES[language])}`;
+export function useWhatsAppUrl() {
+  return getWhatsAppUrl(useSiteLanguage());
+}
 export const APPOINTMENT_PHONE = "+523224035071";
 export const URGENCY_PHONE = "+523221327405";
 
@@ -67,7 +75,6 @@ export function WhatsAppIcon({ className = "" }: { className?: string }) {
 const socialLinks = [
   { href: FACEBOOK_URL, label: "Facebook", Icon: FacebookIcon },
   { href: INSTAGRAM_URL, label: "Instagram", Icon: InstagramIcon },
-  { href: WHATSAPP_URL, label: "WhatsApp", Icon: WhatsAppIcon },
   { href: MAP_URL, label: "Google Maps", Icon: MapPin },
   {
     href: `tel:${APPOINTMENT_PHONE}`,
@@ -75,26 +82,6 @@ const socialLinks = [
     Icon: Phone,
   },
 ];
-
-export function WhatsAppButton({
-  children = "Agendar por WhatsApp",
-  inverse = false,
-}: {
-  children?: React.ReactNode;
-  inverse?: boolean;
-}) {
-  return (
-    <a
-      href={WHATSAPP_URL}
-      target="_blank"
-      rel="noreferrer"
-      className={`inline-flex items-center gap-3 rounded-full px-6 py-4 text-[10px] font-bold uppercase tracking-[0.12em] transition-all duration-200 hover:-translate-y-0.5 max-sm:w-full max-sm:justify-center ${inverse ? "border border-white/40 bg-transparent text-white hover:bg-white hover:text-[#082b46]" : "bg-[#0f7065] text-white shadow-[0_12px_24px_rgba(15,112,101,.18)] hover:bg-[#0b6258]"}`}
-    >
-      {children}
-      <ArrowRight className="h-4 w-4" />
-    </a>
-  );
-}
 
 export function Logo({
   white = false,
@@ -141,9 +128,16 @@ export function Logo({
 }
 
 function SocialLinks({ dark = true }: { dark?: boolean }) {
+  const whatsAppUrl = useWhatsAppUrl();
+  const links = [
+    ...socialLinks.slice(0, 2),
+    { href: whatsAppUrl, label: "WhatsApp", Icon: WhatsAppIcon },
+    ...socialLinks.slice(2),
+  ];
+
   return (
     <div className="flex justify-center gap-3">
-      {socialLinks.map(({ href, label, Icon }) => (
+      {links.map(({ href, label, Icon }) => (
         <a
           key={label}
           href={href}
@@ -197,11 +191,18 @@ export function SharedScrollBackground({
     };
     const update = () => {
       const end = endRef.current;
-      const endBottom = end
-        ? end.getBoundingClientRect().bottom + window.scrollY
+      const endBounds = end?.getBoundingClientRect();
+      const endBottom = endBounds
+        ? endBounds.bottom + window.scrollY
         : Number.POSITIVE_INFINITY;
+      const footerTop = document
+        .querySelector("footer")
+        ?.getBoundingClientRect().top;
       layer.style.visibility =
-        !end || end.getBoundingClientRect().bottom > 0 ? "visible" : "hidden";
+        (!endBounds || endBounds.bottom > 0) &&
+        (footerTop === undefined || footerTop >= window.innerHeight)
+          ? "visible"
+          : "hidden";
       if (reducedMotion) return;
       const zoomDistance = end
         ? Math.max(endBottom - window.innerHeight, window.innerHeight)
@@ -232,6 +233,8 @@ export function SharedScrollBackground({
         ref={imageRef}
         src={src}
         alt={alt}
+        fetchPriority="high"
+        decoding="async"
         className={`size-full object-cover object-center will-change-transform ${imageClassName}`}
         style={{ transform: "translate3d(0, 0, 0) scale(1.04)" }}
       />
@@ -241,6 +244,7 @@ export function SharedScrollBackground({
 
 export function Header({ dark = false }: { dark?: boolean }) {
   const [location] = useLocation();
+  const language = useSiteLanguage();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -278,22 +282,8 @@ export function Header({ dark = false }: { dark?: boolean }) {
   const isDark = true;
   const transparentAtTop = dark && !scrolled && !open;
   const servicesActive = location.startsWith("/servicios");
-  const currentUrl = new URL(window.location.href);
-  const isEnglish =
-    currentUrl.hostname.endsWith(".translate.goog") ||
-    currentUrl.searchParams.get("tl") === "en" ||
-    currentUrl.searchParams.get("_x_tr_tl") === "en";
-  const translatedSource = currentUrl.searchParams.get("u");
-  const translatedHost = currentUrl.hostname
-    .replace(/\.translate\.goog$/, "")
-    .replace(/--/g, "\0")
-    .replace(/-/g, ".")
-    .replace(/\0/g, "-");
-  const spanishUrl =
-    translatedSource || `https://${translatedHost}${currentUrl.pathname}`;
-  const languageUrl = isEnglish
-    ? spanishUrl
-    : `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIComponent(currentUrl.href)}`;
+  const isEnglish = language === "en";
+  const toggleLanguage = () => setSiteLanguage(isEnglish ? "es" : "en");
   return (
     <>
       <header
@@ -392,13 +382,14 @@ export function Header({ dark = false }: { dark?: boolean }) {
             )}
           </nav>
           <div className="flex items-center justify-self-end gap-2">
-            <a
-              href={languageUrl}
+            <button
+              type="button"
+              onClick={toggleLanguage}
               className={`hidden size-11 place-items-center rounded-none border text-[10px] font-bold tracking-[.12em] transition-colors duration-300 lg:grid ${isDark ? "border-white/35 text-white hover:border-[#7ab2db] hover:text-[#9bc9e7]" : "border-[#12395d]/30 text-[#12395d] hover:border-[#4291cd] hover:text-[#2e759f]"}`}
-              aria-label={isEnglish ? "Cambiar a español" : "Change to English"}
+              aria-label={isEnglish ? "Switch to Spanish" : "Change to English"}
             >
               {isEnglish ? "ES" : "EN"}
-            </a>
+            </button>
             <button
               type="button"
               onClick={() => setOpen(value => !value)}
@@ -477,16 +468,17 @@ export function Header({ dark = false }: { dark?: boolean }) {
             )}
           </nav>
           <div className="mx-auto mb-20 flex w-full max-w-lg flex-col items-center gap-5 sm:mb-24">
-            <a
-              href={languageUrl}
+            <button
+              type="button"
+              onClick={toggleLanguage}
               className="inline-flex min-h-11 items-center gap-3 border border-white/30 px-5 font-mono text-[10px] font-bold uppercase tracking-[.12em] text-white transition-colors hover:border-[#7ab2db] hover:text-[#9bc9e7]"
-              aria-label={isEnglish ? "Cambiar a español" : "Change to English"}
+              aria-label={isEnglish ? "Switch to Spanish" : "Change to English"}
             >
               <span>{isEnglish ? "ES" : "EN"}</span>
               <span className="text-white/65">
                 {isEnglish ? "Español" : "English"}
               </span>
-            </a>
+            </button>
             <div className="w-full border-t border-white/15 pt-5">
               <SocialLinks />
             </div>
@@ -517,6 +509,7 @@ export function PageIntro({
 }) {
   return (
     <div
+      key={`${title}-${italic ?? ""}`}
       className={`hero-copy relative z-10 min-w-0 max-w-3xl ${centered ? "mx-auto text-center" : right ? "ml-auto text-right" : ""}`}
     >
       {eyebrow && (
@@ -682,9 +675,11 @@ export function Footer() {
 }
 
 export function FloatingWhatsApp() {
+  const whatsAppUrl = useWhatsAppUrl();
+
   return (
     <a
-      href={WHATSAPP_URL}
+      href={whatsAppUrl}
       target="_blank"
       rel="noreferrer"
       className="fixed bottom-[max(14px,env(safe-area-inset-bottom))] right-[max(14px,env(safe-area-inset-right))] z-40 grid size-13 place-items-center rounded-full bg-[#0f7065] text-white shadow-[0_14px_28px_rgba(15,112,101,.28)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_34px_rgba(15,112,101,.35)]"
@@ -695,57 +690,14 @@ export function FloatingWhatsApp() {
   );
 }
 
-export function ImageModal({
-  image,
-  onClose,
-}: {
-  image: { src: string; alt: string } | null;
-  onClose: () => void;
-}) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (image && !dialog.open) dialog.showModal();
-    if (!image && dialog.open) dialog.close();
-  }, [image]);
-
-  return (
-    <dialog
-      ref={dialogRef}
-      onClose={onClose}
-      onClick={event => event.target === event.currentTarget && onClose()}
-      className="m-auto max-h-[90vh] w-[min(92vw,1100px)] overflow-visible bg-transparent p-0 backdrop:bg-[#082b46]/85 backdrop:backdrop-blur-sm"
-      aria-label="Vista ampliada de la imagen"
-    >
-      {image && (
-        <figure className="relative overflow-hidden rounded-[22px] bg-white p-2 shadow-2xl">
-          <img
-            src={image.src}
-            alt={image.alt}
-            className="max-h-[85vh] w-full rounded-[16px] object-contain"
-          />
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute right-4 top-4 grid size-11 place-items-center rounded-full bg-[#082b46]/90 text-white"
-            aria-label="Cerrar imagen"
-          >
-            <X className="size-5" />
-          </button>
-        </figure>
-      )}
-    </dialog>
-  );
-}
-
 export function PageShell({
   children,
   darkHeader = false,
+  animateFirstSection = false,
 }: {
   children: React.ReactNode;
   darkHeader?: boolean;
+  animateFirstSection?: boolean;
 }) {
   useLayoutEffect(() => {
     const sections = Array.from(document.querySelectorAll("main > section"));
@@ -764,6 +716,11 @@ export function PageShell({
 
     if (reducedMotion) return;
     revealItems.forEach((item, index) => {
+      if (index === 0 && animateFirstSection) return;
+      if (index === 1 && animateFirstSection) {
+        item.classList.add("section-reveal-auto");
+        return;
+      }
       item.classList.add("section-reveal");
       if (index === 0) item.classList.add("section-reveal--visible");
     });
@@ -777,14 +734,16 @@ export function PageShell({
       },
       { rootMargin: "0px 0px -10%", threshold: 0.08 }
     );
-    const frame = requestAnimationFrame(() =>
-      revealItems.slice(1).forEach(item => observer.observe(item))
-    );
+    const frame = requestAnimationFrame(() => {
+      revealItems
+        .slice(animateFirstSection ? 2 : 1)
+        .forEach(item => observer.observe(item));
+    });
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, []);
+  }, [animateFirstSection]);
 
   return (
     <div className="min-h-screen overflow-x-clip bg-[#fbfdfe]">

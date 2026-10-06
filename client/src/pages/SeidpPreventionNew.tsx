@@ -50,7 +50,7 @@ export default function SeidpPreventionNew() {
   const clarityRef = useRef<HTMLElement>(null);
 
   return (
-    <PageShell darkHeader>
+    <PageShell darkHeader animateFirstSection>
       <main className="relative isolate">
         <SharedScrollBackground
           name="prevencion"

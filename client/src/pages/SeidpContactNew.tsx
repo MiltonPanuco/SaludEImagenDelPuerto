@@ -12,8 +12,8 @@ import {
   PageIntro,
   PageShell,
   URGENCY_PHONE,
-  WHATSAPP_URL,
   WhatsAppIcon,
+  useWhatsAppUrl,
 } from "@/components/SeidpLayout";
 
 const questions = [
@@ -40,8 +40,10 @@ const questions = [
 ] as const;
 
 export default function SeidpContactNew() {
+  const whatsAppUrl = useWhatsAppUrl();
+
   return (
-    <PageShell darkHeader>
+    <PageShell darkHeader animateFirstSection>
       <main>
         <section className="relative isolate flex min-h-[68svh] items-end overflow-hidden bg-[#082b46] pb-12 pt-28 text-white sm:min-h-[72svh] sm:pb-16">
           <img
@@ -62,7 +64,7 @@ export default function SeidpContactNew() {
             />
             <a
               href="#hablar"
-              className="mt-8 inline-flex items-center gap-3 text-xs font-semibold text-white"
+              className="hero-enter hero-enter--actions mt-8 inline-flex items-center gap-3 text-xs font-semibold text-white"
             >
               <span className="grid size-9 place-items-center rounded-full border border-white/40">
                 <ArrowDown className="size-4" />
@@ -88,7 +90,7 @@ export default function SeidpContactNew() {
             </div>
             <div className="border-t border-[#12395d]/15">
               <a
-                href={WHATSAPP_URL}
+                href={whatsAppUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="group grid grid-cols-[2.75rem_1fr_auto] items-center gap-4 border-b border-[#12395d]/15 py-6 text-[#12395d] transition-all duration-300 hover:bg-[#e8f5f5] sm:grid-cols-[3.5rem_1fr_auto_auto] sm:px-5"
@@ -218,7 +220,7 @@ export default function SeidpContactNew() {
                       Llamar <Phone className="size-4" />
                     </a>
                     <a
-                      href={WHATSAPP_URL}
+                      href={whatsAppUrl}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#12395d]/20 px-3 text-xs font-bold transition-colors hover:bg-white"
@@ -279,7 +281,7 @@ export default function SeidpContactNew() {
                   ¿Tu pregunta no aparece aquí?
                 </p>
                 <a
-                  href={WHATSAPP_URL}
+                  href={whatsAppUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="group inline-flex min-h-11 items-center gap-3 text-[10px] font-bold uppercase tracking-[.13em] text-[#0f7065]"

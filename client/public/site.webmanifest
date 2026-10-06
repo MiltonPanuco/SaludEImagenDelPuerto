@@ -1,6 +1,9 @@
 {
   "name": "Salud e Imagen del Puerto",
   "short_name": "Salud e Imagen del Puerto",
+  "lang": "es",
+  "start_url": "/es/",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

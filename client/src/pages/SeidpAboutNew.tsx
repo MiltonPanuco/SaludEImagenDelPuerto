@@ -12,7 +12,7 @@ export default function SeidpAboutNew() {
   const peopleRef = useRef<HTMLElement>(null);
 
   return (
-    <PageShell darkHeader>
+    <PageShell darkHeader animateFirstSection>
       <main className="relative isolate flex flex-col">
         <SharedScrollBackground
           name="nosotros"
@@ -34,7 +34,7 @@ export default function SeidpAboutNew() {
           </div>
         </section>
 
-        <section className="order-1 bg-[#fbfdfe] pb-10 pt-16 sm:pb-12 sm:pt-24">
+        <section className="order-1 bg-[#fbfdfe] pb-16 pt-16 sm:pb-24 sm:pt-24">
           <div className="mx-auto grid max-w-[1180px] gap-10 px-5 sm:px-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-20 lg:px-12">
             <div className="overflow-hidden rounded-[24px] bg-[#dceef4]">
               <img

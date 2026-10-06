@@ -95,7 +95,7 @@ export default function SeidpHome() {
                 description="Estudios de imagen, laboratorio y prevención en Puerto Vallarta. Información precisa para que tomes el siguiente paso con calma."
                 dark
               />
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="hero-enter hero-enter--actions mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/contacto"
                   className="inline-flex min-h-11 items-center gap-3 rounded-full bg-[#378ca0] px-6 text-[10px] font-bold uppercase tracking-[.13em] text-white transition-colors hover:bg-[#4291cd]"
@@ -110,7 +110,7 @@ export default function SeidpHome() {
                 </Link>
               </div>
             </div>
-            <aside className="hidden border-l border-white/25 pl-6 lg:block">
+            <aside className="hero-enter hero-enter--aside hidden border-l border-white/25 pl-6 lg:block">
               <p className="text-[9px] font-bold uppercase tracking-[.18em] text-[#bfe0f1]">
                 Aquí empieza
               </p>

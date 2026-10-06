@@ -7,7 +7,7 @@ import { mkdir } from "node:fs/promises";
 const { chromium } = createRequire(import.meta.url)(
   process.env.PLAYWRIGHT_MODULE || "playwright"
 );
-const browser = await chromium.launch({ channel: "chrome", headless: true });
+const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage();
 const errors = [];
 page.on("pageerror", error => errors.push(error.message));
@@ -18,6 +18,59 @@ if (screenshots) await mkdir(screenshots, { recursive: true });
 try {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(`${base}/contacto`);
+  const loadingScreen = page.getByRole("status", {
+    name: "Cargando Salud e Imagen del Puerto",
+  });
+  await loadingScreen.waitFor();
+  assert.equal(
+    await loadingScreen.locator('[data-spinner="4"]').count(),
+    1,
+    "Initial loading screen uses spinner 4"
+  );
+  assert.equal(
+    await loadingScreen.locator('[data-spinner="4"]').getAttribute("src"),
+    "/spinner-loading.svg",
+    "Initial loading screen uses the renamed spinner asset"
+  );
+  assert.equal(
+    await page.evaluate(() => getComputedStyle(document.documentElement).overflow),
+    "hidden",
+    "Initial loading screen prevents scrolling"
+  );
+  await loadingScreen.waitFor({ state: "detached", timeout: 2500 });
+  assert.equal(
+    await page.evaluate(() => location.pathname),
+    "/es/contacto",
+    "Legacy URLs normalize to the Spanish route tree"
+  );
+  assert.equal(
+    await page.locator('link[rel="canonical"]').getAttribute("href"),
+    `${base}/es/contacto`,
+    "Spanish routes publish their canonical URL"
+  );
+  assert.deepEqual(
+    await page.locator('link[rel="alternate"][hreflang]').evaluateAll(links =>
+      Object.fromEntries(
+        links.map(link => [link.getAttribute("hreflang"), link.getAttribute("href")])
+      )
+    ),
+    {
+      es: `${base}/es/contacto`,
+      en: `${base}/en/contacto`,
+      "x-default": `${base}/es/contacto`,
+    },
+    "Localized routes expose es, en, and x-default alternates"
+  );
+  assert.notEqual(
+    await page.evaluate(() => getComputedStyle(document.documentElement).overflow),
+    "hidden",
+    "Scrolling returns after real page load"
+  );
+  await page.evaluate(() => window.scrollTo(0, 600));
+  await page.reload();
+  await loadingScreen.waitFor();
+  await loadingScreen.waitFor({ state: "detached", timeout: 2500 });
+  assert.equal(await page.evaluate(() => scrollY), 0, "Reload starts at the top");
   const trigger = page
     .getByRole("navigation", { name: "Navegación principal", exact: true })
     .getByRole("button", { name: "Servicios" });
@@ -30,7 +83,9 @@ try {
   await submenu.waitFor();
   const routes = await submenu
     .locator("a")
-    .evaluateAll(links => links.map(link => link.getAttribute("href")));
+    .evaluateAll(links =>
+      links.map(link => link.getAttribute("href").replace(/^\/es(?=\/)/, ""))
+    );
   const serviceTitles = await submenu
     .locator("a")
     .evaluateAll(links =>
@@ -108,6 +163,65 @@ try {
     .click();
   await page.waitForURL("**/servicios/radiografias");
   await submenu.waitFor({ state: "hidden" });
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForFunction(() => scrollY > innerHeight);
+  await page
+    .getByRole("navigation", { name: "Navegación principal", exact: true })
+    .getByRole("link", { name: "Contacto", exact: true })
+    .click();
+  await page.waitForURL("**/contacto");
+  await page.getByRole("heading", { name: /Hablemos/i, level: 1 }).waitFor();
+  assert.equal(
+    await page.evaluate(() => scrollY),
+    0,
+    "Route changes return to the top without smooth scrolling through sections"
+  );
+  await page.route(
+    "**/media/seidp-consulta-medica.webp",
+    async route => {
+      await new Promise(resolve => setTimeout(resolve, 350));
+      await route.continue();
+    },
+    { times: 1 }
+  );
+  await page
+    .getByRole("navigation", { name: "Navegación principal", exact: true })
+    .getByRole("link", { name: "Nosotros", exact: true })
+    .click();
+  await page.waitForURL("**/nosotros");
+  const routeLoadingScreen = page.getByRole("status", {
+    name: "Cargando nueva página",
+  });
+  await routeLoadingScreen.waitFor({ state: "visible" });
+  assert.equal(
+    await page.evaluate(() =>
+      document.documentElement.classList.contains("is-route-loading")
+    ),
+    true,
+    "Slow route media activates the loading screen and scroll lock"
+  );
+  assert.deepEqual(
+    await page.locator(".hero-copy > h1, .section-reveal-auto").evaluateAll(
+      elements => elements.map(element => getComputedStyle(element).animationPlayState)
+    ),
+    ["paused", "paused"],
+    "Automatic entry animations pause behind the route loader"
+  );
+  await routeLoadingScreen.waitFor({ state: "hidden" });
+  assert.equal(
+    await page.evaluate(() =>
+      document.documentElement.classList.contains("is-route-loading")
+    ),
+    false,
+    "Route loading screen leaves as soon as critical media is ready"
+  );
+  assert.deepEqual(
+    await page.locator(".hero-copy > h1, .section-reveal-auto").evaluateAll(
+      elements => elements.map(element => getComputedStyle(element).animationPlayState)
+    ),
+    ["running", "running"],
+    "Automatic entry animations resume when the route is visible"
+  );
 
   for (const [width, height] of [
     [360, 700],
@@ -125,7 +239,7 @@ try {
       "/aviso-de-privacidad",
       ...routes,
     ]) {
-      await page.goto(`${base}${route}`);
+      await page.goto(`${base}/es${route}`);
       await page.locator("main h1").waitFor();
       await page.evaluate(() => document.fonts.ready);
       if (width < 1024) {
@@ -144,7 +258,7 @@ try {
         }
         assert.equal(
           await page
-            .locator('header a[aria-label="Change to English"]')
+            .locator('header button[aria-label="Change to English"]')
             .isHidden(),
           true,
           "Language control moves out of the compact header"
@@ -158,6 +272,35 @@ try {
         );
       }
       assert.equal(await page.locator("main h1").count(), 1, route);
+      if (["/nosotros", "/contacto", "/prevencion", "/servicios"].includes(route)) {
+        assert.equal(
+          await page
+            .locator("main > section")
+            .first()
+            .locator(".hero-copy > h1")
+            .evaluate(element => getComputedStyle(element).animationName),
+          "hero-copy-in",
+          `${route}: first section uses its dedicated automatic animation`
+        );
+        assert.equal(
+          await page
+            .locator("main > section")
+            .first()
+            .locator(".section-reveal")
+            .count(),
+          0,
+          `${route}: first section is not hidden by the scroll reveal system`
+        );
+        assert.equal(
+          await page
+            .locator("main > section")
+            .nth(1)
+            .locator(".section-reveal-auto")
+            .evaluate(element => getComputedStyle(element).animationName),
+          "section-auto-in",
+          `${route}: first content section enters automatically`
+        );
+      }
       const hero = await page.locator("main > section").first().boundingBox();
       if (!route.includes("privacidad") && !route.includes("terminos")) {
         const expectedRatio = route === "/" ? 1 : width < 768 ? 0.68 : 0.72;
@@ -172,6 +315,15 @@ try {
         `${route}: heading words stay separated`
       );
       if (route === "/") {
+        assert.deepEqual(
+          await page
+            .locator(".hero-enter")
+            .evaluateAll(elements =>
+              elements.map(element => getComputedStyle(element).animationName)
+            ),
+          ["hero-copy-in", "hero-copy-in"],
+          "Home: hero actions and right note animate in"
+        );
         const sharedBackground = page.locator(
           '[data-shared-scroll-background="home"]'
         );
@@ -208,7 +360,7 @@ try {
           await page
             .getByRole("link", { name: "Agendar una consulta", exact: true })
             .getAttribute("href"),
-          "/contacto"
+          "/es/contacto"
         );
         const servicesSectionY = (
           await page
@@ -240,7 +392,14 @@ try {
         );
         await page.evaluate(() => window.scrollTo(0, 0));
       }
-      if (route === "/contacto" || route.startsWith("/servicios/")) {
+      if (route === "/contacto") {
+        assert.equal(
+          await page
+            .locator('a[href="#hablar"]')
+            .evaluate(element => getComputedStyle(element).animationName),
+          "hero-copy-in",
+          "Contact: hero CTA animates in"
+        );
         const photo = page.locator("main > section").first().locator("img");
         await photo.evaluate(img => img.decode());
         const bounds = await photo.boundingBox();
@@ -263,6 +422,43 @@ try {
       );
       assert.equal(overflow, false, `${route} overflows at ${width}px`);
       if (route.startsWith("/servicios/")) {
+        assert.equal(
+          await page
+            .locator('a[href="#estudios"]')
+            .locator("..")
+            .evaluate(element => getComputedStyle(element).animationName),
+          "hero-copy-in",
+          `${route}: hero CTA animates in`
+        );
+        const serviceBackground = page.locator(
+          '[data-shared-scroll-background^="servicio-"]'
+        );
+        assert.equal(
+          await serviceBackground.count(),
+          1,
+          `${route}: hero and visit share one background element`
+        );
+        assert.equal(
+          await page
+            .locator("main > section")
+            .first()
+            .evaluate(
+              element => getComputedStyle(element).backgroundColor,
+              null
+            ),
+          "rgba(0, 0, 0, 0)",
+          `${route}: shared image remains visible behind the hero overlays`
+        );
+        assert.equal(
+          await page.locator("main > section").first().locator("img").count(),
+          0,
+          `${route}: hero does not duplicate its shared image`
+        );
+        assert.equal(
+          await page.locator("#visita > img").count(),
+          0,
+          `${route}: visit does not duplicate its shared image`
+        );
         await page
           .getByRole("link", { name: "Ver indicaciones", exact: true })
           .waitFor();
@@ -273,7 +469,7 @@ try {
               exact: true,
             })
             .getAttribute("href"),
-          "/contacto"
+          "/es/contacto"
         );
         for (const id of ["estudios", "preparacion", "visita"])
           assert.equal(await page.locator(`#${id}`).count(), 1);
@@ -288,11 +484,11 @@ try {
         const stage = page.locator(".service-journey-stage");
         assert.ok(
           Math.abs((await journey.boundingBox()).height - height * 4) < 2,
-          `${route}: vertical journey provides four viewports of scroll`
+          `${route}: vertical journey provides four full viewports of scroll`
         );
         assert.ok(
           Math.abs((await stage.boundingBox()).height - height) < 2,
-          `${route}: horizontal stage is viewport height`
+          `${route}: horizontal stage fills the viewport`
         );
         assert.equal(
           await page.locator(".service-panels > section").count(),
@@ -308,6 +504,44 @@ try {
           [true, true, true, true],
           `${route}: panels fit within one viewport without internal vertical scroll`
         );
+        assert.ok(
+          (await page.locator("[data-related-panel-content]").boundingBox())
+            .height <=
+            height * 0.8,
+          `${route}: final related-services panel stays visually compact`
+        );
+        assert.deepEqual(
+          await page.locator("[data-related-panel-content]").evaluate(element => {
+            const style = getComputedStyle(element);
+            return [style.borderRadius, style.boxShadow];
+          }),
+          ["0px", "none"],
+          `${route}: related services are not wrapped in a card`
+        );
+        if (
+          [
+            "/servicios/ultrasonidos",
+            "/servicios/laboratorio-clinico",
+            "/servicios/biopsias-guiadas",
+          ].includes(route)
+        ) {
+          assert.equal(
+            await page
+              .locator("#preparacion")
+              .getByText("Indicación para tu cita", { exact: true })
+              .count(),
+            0,
+            `${route}: preparation avoids repeated labels`
+          );
+          if (width >= 768) {
+            assert.ok(
+              (await page.locator("[data-preparation-image]").boundingBox())
+                .height <=
+                height * 0.4,
+              `${route}: preparation image stays compact below the header`
+            );
+          }
+        }
         if (width === 1440) {
           await journey.evaluate(element =>
             window.scrollTo(
@@ -336,12 +570,26 @@ try {
             /y mandatory/,
             `${route}: the journey snaps section by section`
           );
+          await journey.evaluate(element =>
+            window.scrollTo(
+              0,
+              element.getBoundingClientRect().top + scrollY + innerHeight * 2
+            )
+          );
+          await page.waitForFunction(
+            element => getComputedStyle(element).visibility === "visible",
+            await serviceBackground.elementHandle()
+          );
           await page.locator("footer").scrollIntoViewIfNeeded();
           await page.waitForFunction(
             () =>
               !document.documentElement.classList.contains(
                 "service-scroll-snap"
               )
+          );
+          await page.waitForFunction(
+            element => getComputedStyle(element).visibility === "hidden",
+            await serviceBackground.elementHandle()
           );
         }
       }
@@ -550,8 +798,85 @@ try {
     }
   }
 
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(`${base}/`);
+  await page
+    .getByRole("button", { name: "Change to English", exact: true })
+    .click();
+  await page.waitForURL(`${base}/en/`);
+  await page.getByRole("heading", {
+    name: /Your health deserves to be seen clearly/i,
+    level: 1,
+  }).waitFor();
+  assert.equal(await page.locator("html").getAttribute("lang"), "en");
+  assert.equal(
+    await page.evaluate(() => localStorage.getItem("seidp-language")),
+    "en",
+    "English preference persists"
+  );
+  await page.reload();
+  const aboutLink = page
+    .getByRole("navigation", { name: "Main navigation", exact: true })
+    .getByRole("link", { name: "About us", exact: true });
+  await aboutLink.waitFor();
+  await aboutLink.click();
+  await page.waitForURL(`${base}/en/nosotros`);
+  await page.getByRole("heading", {
+    name: /Approachable diagnosis, clearer decisions/i,
+    level: 1,
+  }).waitFor();
+  await page
+    .getByRole("button", { name: "Switch to Spanish", exact: true })
+    .click();
+  await page.waitForURL(`${base}/es/nosotros`);
+  await page
+    .getByRole("navigation", { name: "Navegación principal", exact: true })
+    .getByRole("link", { name: "Nosotros", exact: true })
+    .waitFor();
+  assert.equal(await page.locator("html").getAttribute("lang"), "es");
+  await page.goto(`${base}/en/contacto`);
+  await page.getByRole("heading", { name: "Let's talk.", level: 1 }).waitFor();
+  assert.equal(await page.locator("html").getAttribute("lang"), "en");
+  assert.equal(
+    await page.locator('link[rel="canonical"]').getAttribute("href"),
+    `${base}/en/contacto`
+  );
+  assert.match(
+    await page.locator('meta[name="description"]').getAttribute("content"),
+    /diagnostic imaging/i,
+    "English routes publish English metadata"
+  );
+  const englishWhatsAppMessages = await page
+    .locator('a[href^="https://wa.me/"]')
+    .evaluateAll(links =>
+      links.map(link => new URL(link.href).searchParams.get("text"))
+    );
+  assert.ok(
+    englishWhatsAppMessages.length > 0 &&
+      englishWhatsAppMessages.every(
+      message =>
+        message ===
+        "Hello, Salud e Imagen del Puerto. I would like to ask about a study."
+      ),
+    "Every English WhatsApp action uses the English preset"
+  );
+
   await page.setViewportSize({ width: 360, height: 640 });
-  await page.goto(`${base}/contacto`);
+  await page.goto(`${base}/es/contacto`);
+  const spanishWhatsAppMessages = await page
+    .locator('a[href^="https://wa.me/"]')
+    .evaluateAll(links =>
+      links.map(link => new URL(link.href).searchParams.get("text"))
+    );
+  assert.ok(
+    spanishWhatsAppMessages.length > 0 &&
+      spanishWhatsAppMessages.every(
+      message =>
+        message ===
+        "Hola, Salud e Imagen del Puerto. Quiero consultar por un estudio."
+      ),
+    "Every Spanish WhatsApp action keeps the Spanish preset"
+  );
   const question = page.getByRole("button", { name: /¿Cómo puedo agendar/ });
   await question.click();
   assert.equal(await question.getAttribute("aria-expanded"), "true");
