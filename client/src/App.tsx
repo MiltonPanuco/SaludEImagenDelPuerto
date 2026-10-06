@@ -1,17 +1,25 @@
 import NotFound from "@/pages/NotFound";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Route, Router as WouterRouter, Switch, useLocation } from "wouter";
+import {
+  Redirect,
+  Route,
+  Router as WouterRouter,
+  Switch,
+  useLocation,
+} from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SeidpHome from "./pages/SeidpHome";
-import SeidpServices from "./pages/SeidpServicesHub";
-import SeidpServiceDetail from "./pages/SeidpServiceDetail";
-import SeidpPrevention from "./pages/SeidpPreventionNew";
 import SeidpAbout from "./pages/SeidpAboutNew";
 import SeidpContact from "./pages/SeidpContactNew";
 import SeidpPrivacy from "./pages/SeidpPrivacy";
 import SeidpTerms from "./pages/SeidpTerms";
 import { services } from "./serviceData";
-import { localizeText, TranslationLayer, useSiteLanguage } from "./i18n";
+import {
+  LANGUAGE_CHANGE_START_EVENT,
+  localizeText,
+  TranslationLayer,
+  useSiteLanguage,
+} from "./i18n";
 
 const pageTitles: Record<string, string> = {
   "/": "Salud e Imagen del Puerto | Inicio",
@@ -61,6 +69,20 @@ function RouteEffects() {
   const initialRoute = useRef(true);
   const navigationId = useRef(0);
   const [routeLoading, setRouteLoading] = useState(false);
+
+  useEffect(() => {
+    const showLanguageLoading = () => {
+      navigationId.current++;
+      document.documentElement.classList.add("is-route-loading");
+      setRouteLoading(true);
+    };
+    window.addEventListener(LANGUAGE_CHANGE_START_EVENT, showLanguageLoading);
+    return () =>
+      window.removeEventListener(
+        LANGUAGE_CHANGE_START_EVENT,
+        showLanguageLoading
+      );
+  }, []);
 
   useLayoutEffect(() => {
     const service = services.find(item => location === `/servicios/${item.slug}`);
@@ -123,23 +145,22 @@ function RouteEffects() {
         image.addEventListener("error", () => resolve(), { once: true });
       });
     };
-    const showTimer = window.setTimeout(() => {
-      if (navigationId.current !== currentNavigation) return;
-      root.classList.add("is-route-loading");
-      setRouteLoading(true);
-    }, 140);
+    root.classList.add("is-route-loading");
+    setRouteLoading(true);
 
     Promise.allSettled([document.fonts.ready, ...images.map(waitForImage)]).then(
       () => {
         if (navigationId.current !== currentNavigation) return;
-        window.clearTimeout(showTimer);
-        root.classList.remove("is-route-loading");
-        setRouteLoading(false);
+        window.setTimeout(() => {
+          if (navigationId.current !== currentNavigation) return;
+          root.classList.remove("is-route-loading");
+          setRouteLoading(false);
+        }, 250);
       }
     );
 
-    return () => window.clearTimeout(showTimer);
-  }, [location]);
+    return undefined;
+  }, [language]);
 
   return (
     <div
@@ -166,9 +187,15 @@ function AppRoutes() {
   return (
     <Switch key={location}>
       <Route path={"/"} component={SeidpHome} />
-      <Route path={"/servicios"} component={SeidpServices} />
-      <Route path={"/servicios/:slug"} component={SeidpServiceDetail} />
-      <Route path={"/prevencion"} component={SeidpPrevention} />
+      <Route path={"/servicios"}>
+        <Redirect to="/404" replace />
+      </Route>
+      <Route path={"/servicios/:slug"}>
+        <Redirect to="/404" replace />
+      </Route>
+      <Route path={"/prevencion"}>
+        <Redirect to="/404" replace />
+      </Route>
       <Route path={"/nosotros"} component={SeidpAbout} />
       <Route path={"/contacto"} component={SeidpContact} />
       <Route path={"/aviso-de-privacidad"} component={SeidpPrivacy} />

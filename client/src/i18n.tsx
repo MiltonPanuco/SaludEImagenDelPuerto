@@ -619,6 +619,8 @@ const languageFromPath = (): SiteLanguage =>
 
 let language: SiteLanguage = languageFromPath();
 const listeners = new Set<() => void>();
+export const LANGUAGE_CHANGE_START_EVENT = "seidp-language-change-start";
+let languageChangeTimer: number | undefined;
 
 export function setSiteLanguage(nextLanguage: SiteLanguage) {
   const currentPath = window.location.pathname.replace(
@@ -630,19 +632,23 @@ export function setSiteLanguage(nextLanguage: SiteLanguage) {
     language === nextLanguage &&
     window.location.pathname === localizedPath
   ) return;
-  window.history.pushState(
-    window.history.state,
-    "",
-    `${localizedPath}${window.location.search}${window.location.hash}`
-  );
-  language = nextLanguage;
-  try {
-    localStorage.setItem("seidp-language", language);
-  } catch {
-    // Language still changes when storage is unavailable.
-  }
-  listeners.forEach(listener => listener());
-  window.dispatchEvent(new PopStateEvent("popstate"));
+  window.dispatchEvent(new Event(LANGUAGE_CHANGE_START_EVENT));
+  window.clearTimeout(languageChangeTimer);
+  languageChangeTimer = window.setTimeout(() => {
+    window.history.pushState(
+      window.history.state,
+      "",
+      `${localizedPath}${window.location.search}${window.location.hash}`
+    );
+    language = nextLanguage;
+    try {
+      localStorage.setItem("seidp-language", language);
+    } catch {
+      // Language still changes when storage is unavailable.
+    }
+    listeners.forEach(listener => listener());
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  }, 450);
 }
 
 window.addEventListener("popstate", () => {
