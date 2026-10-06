@@ -2,8 +2,11 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "salud-e-imagen-del-puerto",
   "compatibility_date": "2026-10-03",
+  "main": "./server/worker.js",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/es", "/es/*", "/en", "/en/*"],
     "not_found_handling": "single-page-application"
   }
 }
