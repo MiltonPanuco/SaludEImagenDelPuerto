@@ -68,7 +68,7 @@ export default {
         element(element) {
           element.setAttribute(
             "content",
-            new URL("/media/seidp-hero-main.webp", url.origin).href
+            new URL("/brand/logo-fondo-blanco.webp", url.origin).href
           );
         },
       })

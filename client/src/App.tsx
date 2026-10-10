@@ -9,6 +9,9 @@ import {
 } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SeidpHome from "./pages/SeidpHome";
+import SeidpServices from "./pages/SeidpServicesHub";
+import SeidpServiceDetail from "./pages/SeidpServiceDetail";
+import SeidpPrevention from "./pages/SeidpPreventionNew";
 import SeidpAbout from "./pages/SeidpAboutNew";
 import SeidpContact from "./pages/SeidpContactNew";
 import SeidpPrivacy from "./pages/SeidpPrivacy";
@@ -109,7 +112,7 @@ function RouteEffects() {
     setMeta(
       "property",
       "og:image",
-      new URL("/media/seidp-hero-main.webp", window.location.origin).href
+      new URL("/brand/logo-fondo-blanco.webp", window.location.origin).href
     );
     setMeta("name", "twitter:card", "summary_large_image");
     setLink("canonical", canonicalUrl);
@@ -187,15 +190,23 @@ function AppRoutes() {
   return (
     <Switch key={location}>
       <Route path={"/"} component={SeidpHome} />
-      <Route path={"/servicios"}>
-        <Redirect to="/404" replace />
-      </Route>
+      <Route path={"/servicios"} component={SeidpServices} />
+      <Route
+        path={"/servicios/radiografias"}
+        component={SeidpServiceDetail}
+      />
+      <Route
+        path={"/servicios/ultrasonidos"}
+        component={SeidpServiceDetail}
+      />
+      <Route
+        path={"/servicios/electrocardiogramas"}
+        component={SeidpServiceDetail}
+      />
       <Route path={"/servicios/:slug"}>
         <Redirect to="/404" replace />
       </Route>
-      <Route path={"/prevencion"}>
-        <Redirect to="/404" replace />
-      </Route>
+      <Route path={"/prevencion"} component={SeidpPrevention} />
       <Route path={"/nosotros"} component={SeidpAbout} />
       <Route path={"/contacto"} component={SeidpContact} />
       <Route path={"/aviso-de-privacidad"} component={SeidpPrivacy} />
