@@ -40,6 +40,20 @@ const siteDescriptions = {
   en: "Salud e Imagen del Puerto: diagnostic imaging, laboratory testing, prevention, and medical care in Coapinole, Puerto Vallarta.",
 } as const;
 
+const enabledServiceSlugs = new Set([
+  "radiografias",
+  "ultrasonidos",
+  "electrocardiogramas",
+]);
+
+function EnabledServiceDetail({ params }: { params: { slug: string } }) {
+  return enabledServiceSlugs.has(params.slug) ? (
+    <SeidpServiceDetail params={params} />
+  ) : (
+    <Redirect to="/404" replace />
+  );
+}
+
 function setMeta(attribute: "name" | "property", key: string, content: string) {
   let meta = document.head.querySelector<HTMLMetaElement>(
     `meta[${attribute}="${key}"]`
@@ -191,21 +205,7 @@ function AppRoutes() {
     <Switch key={location}>
       <Route path={"/"} component={SeidpHome} />
       <Route path={"/servicios"} component={SeidpServices} />
-      <Route
-        path={"/servicios/radiografias"}
-        component={SeidpServiceDetail}
-      />
-      <Route
-        path={"/servicios/ultrasonidos"}
-        component={SeidpServiceDetail}
-      />
-      <Route
-        path={"/servicios/electrocardiogramas"}
-        component={SeidpServiceDetail}
-      />
-      <Route path={"/servicios/:slug"}>
-        <Redirect to="/404" replace />
-      </Route>
+      <Route path={"/servicios/:slug"} component={EnabledServiceDetail} />
       <Route path={"/prevencion"} component={SeidpPrevention} />
       <Route path={"/nosotros"} component={SeidpAbout} />
       <Route path={"/contacto"} component={SeidpContact} />

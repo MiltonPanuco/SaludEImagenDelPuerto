@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "salud-e-imagen-del-puerto",
+  "name": "saludeimagendelpuerto",
   "compatibility_date": "2026-10-03",
   "main": "./server/worker.js",
   "assets": {
