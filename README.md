@@ -56,5 +56,14 @@ cd ..
 npx wrangler deploy
 ```
 
+En Cloudflare Builds usa la raíz del repositorio con:
+
+- Build command: `npm run build`
+- Deploy command: `npx wrangler deploy`
+- Root directory: `/`
+
+El `package.json` de la raíz administra `frontend/` como workspace, por lo que
+Cloudflare encuentra el proyecto aunque el código de la web esté en esa carpeta.
+
 El Studio editorial está disponible en
 <https://salud-e-imagen-del-puerto.sanity.studio/>.

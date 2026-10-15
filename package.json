@@ -1,0 +1,14 @@
+{
+  "name": "seidp",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=seidp-frontend",
+    "check": "npm run check --workspace=seidp-frontend",
+    "test": "npm test --workspace=seidp-frontend"
+  },
+  "packageManager": "npm@11.20.0"
+}
