@@ -62,8 +62,9 @@ En Cloudflare Builds usa la raíz del repositorio con:
 - Deploy command: `npx wrangler deploy`
 - Root directory: `/`
 
-El `package.json` de la raíz administra `frontend/` como workspace, por lo que
-Cloudflare encuentra el proyecto aunque el código de la web esté en esa carpeta.
+El `package.json` de la raíz instala `frontend/` usando su propio lockfile y
+solicita las dependencias opcionales antes de compilar. Esto evita que un
+lockfile generado en Windows omita los binarios de Linux que utiliza Cloudflare.
 
 El Studio editorial está disponible en
 <https://salud-e-imagen-del-puerto.sanity.studio/>.

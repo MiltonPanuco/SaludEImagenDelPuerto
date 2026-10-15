@@ -2,13 +2,10 @@
   "name": "seidp",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "frontend"
-  ],
   "scripts": {
-    "build": "npm run build --workspace=seidp-frontend",
-    "check": "npm run check --workspace=seidp-frontend",
-    "test": "npm test --workspace=seidp-frontend"
+    "build": "npm install --prefix frontend --include=optional && npm run build --prefix frontend",
+    "check": "npm run check --prefix frontend",
+    "test": "npm test --prefix frontend"
   },
   "packageManager": "npm@11.20.0"
 }
