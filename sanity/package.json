@@ -1,0 +1,33 @@
+{
+  "name": "seidp-sanity-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "seed": "tsx scripts/seed.ts",
+    "import:content": "sanity datasets import .seed/production.ndjson --dataset production --replace",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "test": "tsx --test schemaTypes/schema.test.ts"
+  },
+  "dependencies": {
+    "@sanity/icons": "5.2.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sanity": "6.19.0",
+    "styled-components": "6.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "tsx": "4.23.15",
+    "typescript": "5.6.3"
+  },
+  "overrides": {
+    "undici-types": "7.18.2"
+  },
+  "packageManager": "npm@11.20.0"
+}
