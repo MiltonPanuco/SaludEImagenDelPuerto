@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
+import {readFile} from "node:fs/promises";
 import test from "node:test";
 import worker, {indexedRoutes} from "./worker.js";
+
+test("routes the Sanity API through the Worker", async () => {
+  const config = await readFile(new URL("../../wrangler.jsonc", import.meta.url), "utf8");
+  assert.match(config, /"run_worker_first"\s*:\s*\[[\s\S]*?"\/api\/content"/);
+});
 
 test("redirects public HTTP requests to HTTPS", async () => {
   const response = await worker.fetch(
